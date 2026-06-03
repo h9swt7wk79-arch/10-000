@@ -8,152 +8,172 @@
   <meta name="theme-color" content="#1a5c00">
   <title>10 000 Bières 🍺</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     :root {
-      --green-dark: #0a3d00;
-      --green:      #1a5c00;
-      --green-mid:  #2d8a00;
-      --green-light:#4caf00;
-      --gold:       #c8a415;
-      --gold-light: #f0c830;
-      --cream:      #f5f0e0;
-      --white:      #ffffff;
-      --red:        #c0392b;
+      --green-dark:#0a3d00; --green:#1a5c00; --green-mid:#2d8a00;
+      --gold:#c8a415; --gold-light:#f0c830; --white:#ffffff;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--green-dark); color: var(--white); min-height: 100vh; overflow-x: hidden; }
-
-    .screen { display: none; min-height: 100vh; flex-direction: column; }
-    .screen.active { display: flex; }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--white);min-height:100vh;overflow-x:hidden;}
+    .screen{display:none;min-height:100vh;flex-direction:column;}
+    .screen.active{display:flex;}
 
     /* LOADING */
-    #screen-loading {
-      background: linear-gradient(160deg, var(--green-dark), var(--green));
-      align-items: center; justify-content: center; text-align: center;
-    }
-    .loading-logo { font-family: 'Bebas Neue', sans-serif; font-size: 80px; color: var(--gold-light); animation: pulse 1.5s ease-in-out infinite; }
-    .loading-sub { font-size: 14px; color: rgba(255,255,255,0.4); letter-spacing: 3px; margin-top: 8px; }
-    .loading-spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 24px auto 0; }
+    #screen-loading{background:linear-gradient(160deg,var(--green-dark),var(--green));align-items:center;justify-content:center;text-align:center;}
+    .loading-logo{font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--gold-light);animation:pulse 1.5s ease-in-out infinite;}
+    .loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:24px auto 0;}
 
     /* ONBOARDING */
-    #screen-onboard {
-      background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 60%, var(--green-mid) 100%);
-      align-items: center; justify-content: center; padding: 40px 24px; text-align: center;
-    }
-    .onboard-logo { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--gold-light); line-height: 1; margin-bottom: 4px; text-shadow: 0 4px 20px rgba(200,164,21,0.4); }
-    .onboard-sub { font-size: 14px; color: rgba(255,255,255,0.5); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; }
-    .avatar-picker { width: 110px; height: 110px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 3px dashed var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; margin: 0 auto 12px; overflow: hidden; transition: all 0.2s; }
-    .avatar-picker:active { transform: scale(0.95); }
-    .avatar-picker img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .avatar-pick-hint { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 28px; }
-    .onboard-form { width: 100%; max-width: 320px; }
-    .field { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 16px 20px; width: 100%; color: var(--white); font-size: 18px; font-family: 'Inter', sans-serif; font-weight: 600; text-align: center; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
-    .field::placeholder { color: rgba(255,255,255,0.3); font-weight: 400; }
-    .field:focus { border-color: var(--gold); }
-    .btn-primary { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; border: none; border-radius: 16px; cursor: pointer; box-shadow: 0 8px 24px rgba(200,164,21,0.4); transition: all 0.2s; }
-    .btn-primary:active { transform: scale(0.97); }
+    #screen-onboard{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 60%,var(--green-mid) 100%);align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+    .onboard-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--gold-light);line-height:1;margin-bottom:4px;text-shadow:0 4px 20px rgba(200,164,21,0.4);}
+    .onboard-sub{font-size:14px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:40px;}
+    .avatar-picker{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.1);border:3px dashed var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 12px;overflow:hidden;transition:all 0.2s;}
+    .avatar-picker img{width:100%;height:100%;object-fit:cover;display:none;}
+    .onboard-form{width:100%;max-width:320px;}
+    .field{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;width:100%;color:var(--white);font-size:18px;font-family:'Inter',sans-serif;font-weight:600;text-align:center;margin-bottom:16px;outline:none;transition:border-color 0.2s;}
+    .field::placeholder{color:rgba(255,255,255,0.3);font-weight:400;}
+    .field:focus{border-color:var(--gold);}
+    .btn-primary{width:100%;padding:18px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--green-dark);font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;box-shadow:0 8px 24px rgba(200,164,21,0.4);transition:all 0.2s;}
+    .btn-primary:active{transform:scale(0.97);}
 
     /* HOME */
-    #screen-home { background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%); overflow-y: auto; padding-bottom: 100px; }
-    .home-header { display: flex; align-items: center; justify-content: space-between; padding: 56px 20px 16px; }
-    .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold-light); letter-spacing: 2px; }
-    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border-radius: 30px; padding: 6px 14px 6px 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-    .pill-av { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--green-mid); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; overflow: hidden; }
-    .pill-av img { width: 100%; height: 100%; object-fit: cover; }
-
-    .counter-hero { text-align: center; padding: 8px 20px 20px; }
-    .counter-label { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
-    .counter-number { font-family: 'Bebas Neue', sans-serif; font-size: 88px; line-height: 1; color: var(--gold-light); text-shadow: 0 0 40px rgba(200,164,21,0.5); animation: pulse 2s ease-in-out infinite; }
-    .counter-goal { font-size: 14px; color: rgba(255,255,255,0.4); margin-top: 4px; }
-
-    .progress-wrap { margin: 0 20px 24px; }
-    .progress-track { background: rgba(255,255,255,0.1); border-radius: 100px; height: 12px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 100px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
-    .progress-pct { text-align: right; font-size: 12px; color: var(--gold); font-weight: 700; margin-top: 6px; }
-
-    .beer-zone { display: flex; align-items: center; justify-content: center; padding: 0 20px 20px; }
-    .beer-btn { position: relative; width: 180px; height: 180px; cursor: pointer; animation: float 3s ease-in-out infinite; }
-    .beer-btn img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(200,164,21,0.5)); }
-    .beer-btn:active img { transform: scale(0.9); }
-    .beer-glow { position: absolute; width: 120px; height: 40px; background: rgba(200,164,21,0.3); bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 50%; filter: blur(16px); }
-    .tap-hint { text-align: center; font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
-
-    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold-light); letter-spacing: 2px; padding: 0 20px; margin-bottom: 12px; }
-    .log-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
-    .log-item { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
-    .log-av { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--green-mid); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
-    .log-av img { width: 100%; height: 100%; object-fit: cover; }
-    .log-info { flex: 1; }
-    .log-name { font-weight: 700; font-size: 14px; }
-    .log-detail { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
-    .log-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold-light); }
+    #screen-home{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);overflow-y:auto;padding-bottom:100px;}
+    .home-header{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 16px;}
+    .header-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold-light);letter-spacing:2px;}
+    .user-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border-radius:30px;padding:6px 14px 6px 6px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);}
+    .pill-av{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;overflow:hidden;}
+    .pill-av img{width:100%;height:100%;object-fit:cover;}
+    .counter-hero{text-align:center;padding:8px 20px 20px;}
+    .counter-label{font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+    .counter-number{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1;color:var(--gold-light);text-shadow:0 0 40px rgba(200,164,21,0.5);animation:pulse 2s ease-in-out infinite;}
+    .counter-goal{font-size:14px;color:rgba(255,255,255,0.4);margin-top:4px;}
+    .progress-wrap{margin:0 20px 24px;}
+    .progress-track{background:rgba(255,255,255,0.1);border-radius:100px;height:12px;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:100px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+    .progress-pct{text-align:right;font-size:12px;color:var(--gold);font-weight:700;margin-top:6px;}
+    .beer-zone{display:flex;align-items:center;justify-content:center;padding:0 20px 20px;}
+    .beer-btn{position:relative;width:180px;height:180px;cursor:pointer;animation:float 3s ease-in-out infinite;}
+    .beer-btn img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(200,164,21,0.5));}
+    .beer-btn:active img{transform:scale(0.9);}
+    .beer-glow{position:absolute;width:120px;height:40px;background:rgba(200,164,21,0.3);bottom:0;left:50%;transform:translateX(-50%);border-radius:50%;filter:blur(16px);}
+    .tap-hint{text-align:center;font-size:13px;color:rgba(255,255,255,0.35);margin-bottom:24px;}
+    .section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold-light);letter-spacing:2px;padding:0 20px;margin-bottom:12px;}
+    .log-list{padding:0 20px;display:flex;flex-direction:column;gap:10px;}
+    .log-item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+    .log-av{width:40px;height:40px;border-radius:50%;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;}
+    .log-av img{width:100%;height:100%;object-fit:cover;}
+    .log-info{flex:1;}
+    .log-name{font-weight:700;font-size:14px;}
+    .log-detail{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;}
+    .log-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold-light);}
 
     /* ADD MODAL */
-    #screen-add { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: flex-end; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
-    #screen-add.active { display: flex; }
-    .modal-sheet { background: linear-gradient(160deg, #0f4500, #1a5c00); border-top-left-radius: 28px; border-top-right-radius: 28px; width: 100%; max-width: 480px; padding: 12px 24px 40px; border-top: 1px solid rgba(200,164,21,0.3); animation: slideUp 0.3s ease; max-height: 85vh; overflow-y: auto; }
-    .modal-handle { width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 0 auto 20px; }
-    .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--gold-light); letter-spacing: 2px; margin-bottom: 20px; }
-    .field-label { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-    .persons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .person-card { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
-    .person-card.selected { border-color: var(--gold); background: rgba(200,164,21,0.15); }
-    .pc-av { width: 52px; height: 52px; border-radius: 50%; background: var(--green-mid); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; overflow: hidden; }
-    .pc-av img { width: 100%; height: 100%; object-fit: cover; }
-    .pc-name { font-size: 12px; font-weight: 600; }
-    .btn-add { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; border: none; border-radius: 16px; cursor: pointer; margin-top: 20px; box-shadow: 0 8px 24px rgba(200,164,21,0.4); }
-    .btn-add:active { transform: scale(0.97); }
+    #screen-add{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;justify-content:center;z-index:100;backdrop-filter:blur(4px);}
+    #screen-add.active{display:flex;}
+    .modal-sheet{background:linear-gradient(160deg,#0f4500,#1a5c00);border-top-left-radius:28px;border-top-right-radius:28px;width:100%;max-width:480px;padding:12px 24px 40px;border-top:1px solid rgba(200,164,21,0.3);animation:slideUp 0.3s ease;max-height:90vh;overflow-y:auto;}
+    .modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 20px;}
+    .modal-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold-light);letter-spacing:2px;margin-bottom:20px;}
+    .field-label{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+    .persons-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+    .person-card{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.1);border-radius:16px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;}
+    .person-card.selected{border-color:var(--gold);background:rgba(200,164,21,0.15);}
+    .pc-av{width:52px;height:52px;border-radius:50%;background:var(--green-mid);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;overflow:hidden;}
+    .pc-av img{width:100%;height:100%;object-fit:cover;}
+    .pc-name{font-size:12px;font-weight:600;}
+
+    /* PHOTO UPLOAD */
+    .photo-upload-zone{background:rgba(255,255,255,0.05);border:2px dashed rgba(200,164,21,0.5);border-radius:16px;padding:20px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all 0.2s;position:relative;overflow:hidden;}
+    .photo-upload-zone.has-photo{border-color:var(--gold);border-style:solid;}
+    .photo-upload-zone img{width:100%;max-height:200px;object-fit:cover;border-radius:12px;display:none;}
+    .photo-upload-zone.has-photo img{display:block;}
+    .photo-upload-zone.has-photo .upload-placeholder{display:none;}
+    .upload-placeholder{color:rgba(255,255,255,0.5);font-size:14px;}
+    .upload-icon{font-size:40px;margin-bottom:8px;}
+    .upload-required{font-size:11px;color:var(--gold);margin-top:4px;font-weight:600;}
+
+    .btn-add{width:100%;padding:18px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--green-dark);font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;margin-top:20px;box-shadow:0 8px 24px rgba(200,164,21,0.4);}
+    .btn-add:active{transform:scale(0.97);}
+    .btn-add:disabled{opacity:0.4;cursor:not-allowed;}
+
+    /* FIL D'ACTU */
+    #screen-fil{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);overflow-y:auto;padding-bottom:100px;}
+    .fil-header{padding:56px 20px 20px;}
+    .fil-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold-light);letter-spacing:2px;}
+    .fil-list{padding:0 16px;display:flex;flex-direction:column;gap:16px;}
+
+    .msg-bubble{display:flex;gap:10px;align-items:flex-end;}
+    .msg-bubble.mine{flex-direction:row-reverse;}
+    .msg-av{width:36px;height:36px;border-radius:50%;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;overflow:hidden;}
+    .msg-av img{width:100%;height:100%;object-fit:cover;}
+    .msg-content{max-width:75%;}
+    .msg-name{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;font-weight:600;}
+    .msg-bubble.mine .msg-name{text-align:right;}
+    .msg-box{background:rgba(255,255,255,0.1);border-radius:18px 18px 18px 4px;padding:10px 14px;border:1px solid rgba(255,255,255,0.1);}
+    .msg-bubble.mine .msg-box{background:rgba(200,164,21,0.2);border-radius:18px 18px 4px 18px;border-color:rgba(200,164,21,0.3);}
+    .msg-photo{width:100%;border-radius:12px;max-height:240px;object-fit:cover;margin-bottom:8px;display:block;}
+    .msg-text{font-size:13px;line-height:1.4;}
+    .msg-meta{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;display:flex;align-items:center;gap:6px;}
+    .msg-num{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);}
+
+    /* CARTE */
+    #screen-map{background:var(--green-dark);display:flex;flex-direction:column;padding-bottom:85px;}
+    .map-header{padding:56px 20px 16px;flex-shrink:0;}
+    .map-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold-light);letter-spacing:2px;}
+    .map-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;}
+    #mapContainer{flex:1;min-height:calc(100vh - 200px);}
+    #map{width:100%;height:100%;}
 
     /* STATS */
-    #screen-stats { background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%); padding: 56px 20px 120px; overflow-y: auto; }
-    .stats-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--gold-light); letter-spacing: 3px; margin-bottom: 24px; }
-    .stat-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 14px; }
-    .stat-card-title { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
-    .bar-chart { display: flex; flex-direction: column; gap: 14px; }
-    .bar-row { display: flex; align-items: center; gap: 10px; }
-    .bar-av { width: 36px; height: 36px; border-radius: 50%; background: var(--green-mid); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; overflow: hidden; }
-    .bar-av img { width: 100%; height: 100%; object-fit: cover; }
-    .bar-wrap { flex: 1; }
-    .bar-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-    .bar-track { background: rgba(255,255,255,0.08); border-radius: 100px; height: 10px; overflow: hidden; }
-    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 100px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
-    .bar-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold-light); width: 48px; text-align: right; }
+    #screen-stats{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);padding:56px 20px 120px;overflow-y:auto;}
+    .stats-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold-light);letter-spacing:3px;margin-bottom:24px;}
+    .stat-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;margin-bottom:14px;}
+    .stat-card-title{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+    .bar-chart{display:flex;flex-direction:column;gap:14px;}
+    .bar-row{display:flex;align-items:center;gap:10px;}
+    .bar-av{width:36px;height:36px;border-radius:50%;background:var(--green-mid);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;overflow:hidden;}
+    .bar-av img{width:100%;height:100%;object-fit:cover;}
+    .bar-wrap{flex:1;}
+    .bar-name{font-size:12px;font-weight:600;margin-bottom:4px;}
+    .bar-track{background:rgba(255,255,255,0.08);border-radius:100px;height:10px;overflow:hidden;}
+    .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:100px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+    .bar-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold-light);width:48px;text-align:right;}
 
     /* RULES */
-    #screen-rules { background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%); padding: 56px 20px 120px; overflow-y: auto; }
-    .rules-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--gold-light); letter-spacing: 3px; margin-bottom: 24px; }
-    .rules-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(200,164,21,0.2); border-radius: 20px; padding: 20px; margin-bottom: 14px; }
-    .rules-section { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); margin-bottom: 10px; }
-    .rule-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-    .rule-emoji { font-size: 18px; flex-shrink: 0; }
-    .rule-text { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); }
-    .rule-text b { color: var(--gold-light); }
+    #screen-rules{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);padding:56px 20px 120px;overflow-y:auto;}
+    .rules-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold-light);letter-spacing:3px;margin-bottom:24px;}
+    .rules-card{background:rgba(255,255,255,0.07);border:1px solid rgba(200,164,21,0.2);border-radius:20px;padding:20px;margin-bottom:14px;}
+    .rules-section{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);margin-bottom:10px;}
+    .rule-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+    .rule-emoji{font-size:18px;flex-shrink:0;}
+    .rule-text{font-size:14px;line-height:1.5;color:rgba(255,255,255,0.85);}
+    .rule-text b{color:var(--gold-light);}
 
     /* BOTTOM NAV */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,61,0,0.97); backdrop-filter: blur(20px); border-top: 1px solid rgba(200,164,21,0.2); display: flex; padding: 10px 0 24px; z-index: 50; }
-    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 0; }
-    .nav-icon { font-size: 24px; opacity: 0.4; transition: all 0.2s; }
-    .nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); }
-    .nav-item.active .nav-icon { opacity: 1; }
-    .nav-item.active .nav-label { color: var(--gold-light); }
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,61,0,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(200,164,21,0.2);display:flex;padding:10px 0 24px;z-index:50;}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;}
+    .nav-icon{font-size:22px;opacity:0.4;transition:all 0.2s;}
+    .nav-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);}
+    .nav-item.active .nav-icon{opacity:1;}
+    .nav-item.active .nav-label{color:var(--gold-light);}
 
     /* TOAST */
-    .toast { position: fixed; top: 60px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--gold); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; padding: 12px 24px; border-radius: 100px; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 200; white-space: nowrap; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--gold);color:var(--green-dark);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;padding:12px 24px;border-radius:100px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:200;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    .sync-dot{width:8px;height:8px;border-radius:50%;background:#4caf00;display:inline-block;margin-left:6px;animation:blink 2s ease-in-out infinite;}
 
-    /* SYNC INDICATOR */
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); display: inline-block; margin-left: 6px; animation: blink 2s ease-in-out infinite; }
-    .sync-dot.offline { background: #e74c3c; animation: none; }
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+    @keyframes pulse{0%,100%{text-shadow:0 0 40px rgba(200,164,21,0.5);}50%{text-shadow:0 0 60px rgba(200,164,21,0.8);}}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+    @keyframes beerPop{0%{transform:scale(1);}40%{transform:scale(0.88);}70%{transform:scale(1.08);}100%{transform:scale(1);}}
+    .beer-anim{animation:beerPop 0.4s ease !important;}
+    .confetti{position:fixed;pointer-events:none;z-index:300;border-radius:2px;animation:confettiFall 1.2s ease-out forwards;}
+    @keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg);}100%{opacity:0;transform:translateY(300px) rotate(720deg);}}
 
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-    @keyframes pulse { 0%, 100% { text-shadow: 0 0 40px rgba(200,164,21,0.5); } 50% { text-shadow: 0 0 60px rgba(200,164,21,0.8); } }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    @keyframes beerPop { 0% { transform: scale(1); } 40% { transform: scale(0.88); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
-    .beer-anim { animation: beerPop 0.4s ease !important; }
-    .confetti { position: fixed; pointer-events: none; z-index: 300; border-radius: 2px; animation: confettiFall 1.2s ease-out forwards; }
-    @keyframes confettiFall { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(300px) rotate(720deg); } }
+    /* Leaflet custom marker */
+    .beer-marker{font-size:24px;line-height:1;}
   </style>
 </head>
 <body>
@@ -163,7 +183,7 @@
 <!-- LOADING -->
 <div class="screen active" id="screen-loading">
   <div class="loading-logo">🍺</div>
-  <div class="loading-sub">Connexion en cours...</div>
+  <div style="font-size:14px;color:rgba(255,255,255,0.4);letter-spacing:3px;margin-top:8px;">Connexion en cours...</div>
   <div class="loading-spinner"></div>
 </div>
 
@@ -176,7 +196,7 @@
     <img id="avatarPreview">
     <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
   </div>
-  <p class="avatar-pick-hint">Ajoute ta photo</p>
+  <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:28px;">Ajoute ta photo</p>
   <div class="onboard-form">
     <input class="field" id="nameInput" type="text" placeholder="Ton prénom" maxlength="20" autocomplete="off">
     <button class="btn-primary" onclick="createProfile()">ENTRER DANS LA LÉGENDE 🍺</button>
@@ -198,9 +218,7 @@
     <div class="counter-goal">sur 10 000</div>
   </div>
   <div class="progress-wrap">
-    <div class="progress-track">
-      <div class="progress-fill" id="progressFill" style="width:0%"></div>
-    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     <div class="progress-pct" id="progressPct">0%</div>
   </div>
   <div class="beer-zone">
@@ -220,13 +238,47 @@
 <div id="screen-add" onclick="closeAdd(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">QUI A BU ? 🍺</div>
-    <div class="field-label">Sélectionne la personne</div>
+    <div class="modal-title">+ 1 BIÈRE 🍺</div>
+
+    <div class="field-label">Qui a bu ?</div>
     <div class="persons-grid" id="personsGrid"></div>
+
+    <div class="field-label">📸 Photo de preuve (obligatoire)</div>
+    <div class="photo-upload-zone" id="photoZone" onclick="document.getElementById('beerPhotoInput').click()">
+      <div class="upload-placeholder">
+        <div class="upload-icon">📷</div>
+        <div>Prends une photo de ta bière pleine</div>
+        <div class="upload-required">OBLIGATOIRE · 1 PHOTO = 1 BIÈRE</div>
+      </div>
+      <img id="beerPhotoPreview">
+      <input type="file" id="beerPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="previewBeerPhoto(this)">
+    </div>
+
     <div class="field-label">📍 Lieu</div>
     <input class="field" id="lieuInput" type="text" placeholder="Bar, chez quelqu'un..." style="text-align:left;margin-bottom:0;">
-    <button class="btn-add" onclick="addBeer()">+ 1 BIÈRE 🍺</button>
+
+    <button class="btn-add" id="btnAdd" onclick="addBeer()" disabled>📸 AJOUTE UNE PHOTO D'ABORD</button>
   </div>
+</div>
+
+<!-- FIL D'ACTU -->
+<div class="screen" id="screen-fil">
+  <div class="fil-header">
+    <div class="fil-title">📱 FIL DES BIÈRES</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;" id="filSub">Chargement...</div>
+  </div>
+  <div class="fil-list" id="filList">
+    <div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Aucune bière encore !</div>
+  </div>
+</div>
+
+<!-- CARTE -->
+<div class="screen" id="screen-map">
+  <div class="map-header">
+    <div class="map-title">🗺️ CARTE</div>
+    <div class="map-sub" id="mapSub">Chargement de la carte...</div>
+  </div>
+  <div id="mapContainer"><div id="map"></div></div>
 </div>
 
 <!-- STATS -->
@@ -241,10 +293,8 @@
     <div style="text-align:center;padding:10px 0;">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--gold-light);" id="statsTotal">0</div>
       <div style="font-size:13px;color:rgba(255,255,255,0.4);">sur 10 000 bières</div>
-      <div class="progress-track" style="margin-top:12px;">
-        <div class="progress-fill" id="statsProgress" style="width:0%"></div>
-      </div>
-      <div style="font-size:13px;color:var(--gold);margin-top:8px;font-weight:700;" id="statsPct">0% de la mission accomplie</div>
+      <div class="progress-track" style="margin-top:12px;"><div class="progress-fill" id="statsProgress" style="width:0%"></div></div>
+      <div style="font-size:13px;color:var(--gold);margin-top:8px;font-weight:700;" id="statsPct">0%</div>
     </div>
   </div>
 </div>
@@ -282,328 +332,392 @@
   </div>
 </div>
 
-<!-- BOTTOM NAV (hidden until logged in) -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav" id="bottomNav" style="display:none">
-  <div class="nav-item active" onclick="showTab('home', this)">
-    <div class="nav-icon">🍺</div>
-    <div class="nav-label">Compteur</div>
-  </div>
-  <div class="nav-item" onclick="showTab('stats', this)">
-    <div class="nav-icon">📊</div>
-    <div class="nav-label">Stats</div>
-  </div>
-  <div class="nav-item" onclick="showTab('rules', this)">
-    <div class="nav-icon">📜</div>
-    <div class="nav-label">Règles</div>
-  </div>
+  <div class="nav-item active" onclick="showTab('home',this)"><div class="nav-icon">🍺</div><div class="nav-label">Compteur</div></div>
+  <div class="nav-item" onclick="showTab('fil',this);renderFil();"><div class="nav-icon">📱</div><div class="nav-label">Fil</div></div>
+  <div class="nav-item" onclick="showTab('map',this);initMap();"><div class="nav-icon">🗺️</div><div class="nav-label">Carte</div></div>
+  <div class="nav-item" onclick="showTab('stats',this);renderStats();"><div class="nav-icon">📊</div><div class="nav-label">Stats</div></div>
+  <div class="nav-item" onclick="showTab('rules',this)"><div class="nav-icon">📜</div><div class="nav-label">Règles</div></div>
 </div>
 
-<!-- FIREBASE SDK -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, doc, addDoc, onSnapshot, orderBy, query, limit, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, onSnapshot, orderBy, query, limit, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
-    authDomain: "bieres-1458b.firebaseapp.com",
-    projectId: "bieres-1458b",
-    storageBucket: "bieres-1458b.firebasestorage.app",
-    messagingSenderId: "473243479365",
-    appId: "1:473243479365:web:059399eef3abb580f8e22c"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
+  authDomain: "bieres-1458b.firebaseapp.com",
+  projectId: "bieres-1458b",
+  storageBucket: "bieres-1458b.firebasestorage.app",
+  messagingSenderId: "473243479365",
+  appId: "1:473243479365:web:059399eef3abb580f8e22c"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  // ── State local ────────────────────────────────────────────────────────────
-  let currentUser = null;
-  let allUsers = {};
-  let logs = [];
-  let globalTotal = 0;
-  let selectedPerson = null;
-  let pendingAvatar = null;
+let currentUser = null;
+let allUsers = {};
+let logs = [];
+let allLogs = [];
+let globalTotal = 0;
+let selectedPerson = null;
+let pendingAvatar = null;
+let beerPhotoData = null;
+let mapInstance = null;
+let mapInitialized = false;
 
-  // ── Helpers UI ─────────────────────────────────────────────────────────────
-  window.showToast = (msg) => {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  };
+// ── TOAST ──────────────────────────────────────────────────────────────────
+window.showToast = (msg) => {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+};
 
-  window.spawnConfetti = () => {
-    const colors = ['#c8a415','#f0c830','#ffffff','#4caf00'];
-    for (let i = 0; i < 30; i++) {
-      const el = document.createElement('div');
-      el.className = 'confetti';
-      el.style.cssText = `left:${Math.random()*100}vw;top:${50+Math.random()*20}px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.4}s;animation-duration:${0.8+Math.random()*0.6}s;`;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 1400);
-    }
-  };
-
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + id).classList.add('active');
+window.spawnConfetti = () => {
+  const colors = ['#c8a415','#f0c830','#ffffff','#4caf00'];
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.cssText = `left:${Math.random()*100}vw;top:${50+Math.random()*20}px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.4}s;animation-duration:${0.8+Math.random()*0.6}s;`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
   }
+};
 
-  window.showTab = (name, el) => {
-    showScreen(name);
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-    if (name === 'stats') renderStats();
-  };
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
 
-  function avatarHtml(user, size=40, cls='log-av') {
-    if (user?.avatar) return `<div class="${cls}" style="padding:0;"><img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`;
-    return `<div class="${cls}">${(user?.name||'?')[0].toUpperCase()}</div>`;
-  }
+window.showTab = (name, el) => {
+  showScreen(name);
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+};
 
-  // ── Avatar onboard ─────────────────────────────────────────────────────────
-  window.previewAvatar = (input) => {
-    const file = input.files[0];
-    if (!file) return;
-    // Resize to max 200px to keep Firestore small
+function avatarEl(user, cls='log-av') {
+  if (user?.avatar) return `<div class="${cls}" style="padding:0;"><img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`;
+  return `<div class="${cls}">${(user?.name||'?')[0].toUpperCase()}</div>`;
+}
+
+function compressImage(file, maxSize=800, quality=0.7) {
+  return new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const max = 200;
         let w = img.width, h = img.height;
-        if (w > h) { if (w > max) { h = h*max/w; w = max; } }
-        else { if (h > max) { w = w*max/h; h = max; } }
+        if (w > h) { if (w > maxSize) { h = h*maxSize/w; w = maxSize; } }
+        else { if (h > maxSize) { w = w*maxSize/h; h = maxSize; } }
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        pendingAvatar = canvas.toDataURL('image/jpeg', 0.7);
-        document.getElementById('avatarPreview').src = pendingAvatar;
-        document.getElementById('avatarPreview').style.display = 'block';
-        document.getElementById('avatarPlaceholder').style.display = 'none';
+        resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
-  };
+  });
+}
 
-  // ── CREATE PROFILE ─────────────────────────────────────────────────────────
-  window.createProfile = async () => {
-    const name = document.getElementById('nameInput').value.trim();
-    if (!name) { showToast('Entre ton prénom !'); return; }
+// ── ONBOARDING ─────────────────────────────────────────────────────────────
+window.previewAvatar = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  pendingAvatar = await compressImage(file, 200, 0.7);
+  document.getElementById('avatarPreview').src = pendingAvatar;
+  document.getElementById('avatarPreview').style.display = 'block';
+  document.getElementById('avatarPlaceholder').style.display = 'none';
+};
 
-    const uid = name.toLowerCase().replace(/\s+/g,'_');
-    const userRef = doc(db, 'users', uid);
-    const snap = await getDoc(userRef);
+window.previewBeerPhoto = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  beerPhotoData = await compressImage(file, 800, 0.75);
+  const preview = document.getElementById('beerPhotoPreview');
+  preview.src = beerPhotoData;
+  const zone = document.getElementById('photoZone');
+  zone.classList.add('has-photo');
+  const btn = document.getElementById('btnAdd');
+  btn.disabled = false;
+  btn.textContent = '+ 1 BIÈRE 🍺';
+};
 
+window.createProfile = async () => {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) { showToast('Entre ton prénom !'); return; }
+  const uid = name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (snap.exists()) {
+    currentUser = { uid, ...snap.data() };
+    if (pendingAvatar) { await updateDoc(userRef, { avatar: pendingAvatar }); currentUser.avatar = pendingAvatar; }
+  } else {
+    const userData = { name, avatar: pendingAvatar || null, count: 0, createdAt: Date.now() };
+    await setDoc(userRef, userData);
+    currentUser = { uid, ...userData };
+  }
+  localStorage.setItem('currentUser', uid);
+  initHome();
+  showScreen('home');
+  document.getElementById('bottomNav').style.display = 'flex';
+  showToast(`Bienvenue ${name} ! 🍺`);
+};
+
+window.switchUser = () => {
+  localStorage.removeItem('currentUser');
+  showToast('Recharge la page pour changer de compte');
+};
+
+// ── HOME ───────────────────────────────────────────────────────────────────
+function initHome() {
+  const ha = document.getElementById('headerAvatar');
+  document.getElementById('headerName').textContent = currentUser.name;
+  if (currentUser.avatar) ha.innerHTML = `<img src="${currentUser.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
+  else ha.textContent = currentUser.name[0].toUpperCase();
+  startListeners();
+}
+
+function startListeners() {
+  onSnapshot(doc(db, 'meta', 'global'), snap => {
+    if (snap.exists()) { globalTotal = snap.data().total || 0; updateCounter(globalTotal); }
+  });
+  onSnapshot(collection(db, 'users'), snap => {
+    snap.forEach(d => { allUsers[d.id] = { uid: d.id, ...d.data() }; });
+  });
+  // Last 20 for home
+  const qHome = query(collection(db, 'logs'), orderBy('ts', 'desc'), limit(20));
+  onSnapshot(qHome, snap => {
+    logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderLogs();
+    document.getElementById('syncDot').className = 'sync-dot';
+  });
+  // All logs for fil & map
+  const qAll = query(collection(db, 'logs'), orderBy('ts', 'desc'));
+  onSnapshot(qAll, snap => {
+    allLogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('filSub').textContent = `${allLogs.length} bières au total`;
+  });
+}
+
+function updateCounter(t) {
+  const pct = Math.min((t/10000)*100, 100);
+  document.getElementById('totalCount').textContent = t.toLocaleString('fr');
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct.toFixed(2) + '%';
+}
+
+function renderLogs() {
+  const list = document.getElementById('logList');
+  if (logs.length === 0) { list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>'; return; }
+  list.innerHTML = logs.map(log => {
+    const u = allUsers[log.uid] || { name: log.userName, avatar: null };
+    const date = new Date(log.ts);
+    const timeStr = date.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' · ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="log-item">
+      ${avatarEl(u)}
+      <div class="log-info">
+        <div class="log-name">${u.name}</div>
+        <div class="log-detail">${log.lieu||'Lieu non précisé'} · ${timeStr}</div>
+      </div>
+      <div class="log-num">#${log.num}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADD BEER ───────────────────────────────────────────────────────────────
+window.openAdd = () => {
+  const btn = document.getElementById('beerBtn');
+  btn.classList.add('beer-anim');
+  setTimeout(() => btn.classList.remove('beer-anim'), 400);
+  selectedPerson = currentUser.uid;
+  beerPhotoData = null;
+  document.getElementById('lieuInput').value = '';
+  document.getElementById('beerPhotoPreview').src = '';
+  document.getElementById('photoZone').classList.remove('has-photo');
+  document.getElementById('beerPhotoInput').value = '';
+  document.getElementById('btnAdd').disabled = true;
+  document.getElementById('btnAdd').textContent = '📸 AJOUTE UNE PHOTO D\'ABORD';
+  renderPersonsGrid();
+  document.getElementById('screen-add').classList.add('active');
+};
+
+window.closeAdd = (e) => {
+  if (e.target === document.getElementById('screen-add'))
+    document.getElementById('screen-add').classList.remove('active');
+};
+
+window.selectPerson = (uid) => { selectedPerson = uid; renderPersonsGrid(); };
+
+function renderPersonsGrid() {
+  document.getElementById('personsGrid').innerHTML = Object.values(allUsers).map(u => {
+    const sel = u.uid === selectedPerson;
+    const av = u.avatar
+      ? `<div class="pc-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
+      : `<div class="pc-av">${u.name[0].toUpperCase()}</div>`;
+    return `<div class="person-card ${sel?'selected':''}" onclick="selectPerson('${u.uid}')">${av}<div class="pc-name">${u.name}</div></div>`;
+  }).join('');
+}
+
+window.addBeer = async () => {
+  if (!selectedPerson) { showToast('Sélectionne quelqu\'un !'); return; }
+  if (!beerPhotoData) { showToast('📸 Photo obligatoire !'); return; }
+  const lieu = document.getElementById('lieuInput').value.trim();
+  const u = allUsers[selectedPerson];
+
+  // Get coords if available
+  let lat = null, lng = null;
+  try {
+    const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, {timeout:3000}));
+    lat = pos.coords.latitude;
+    lng = pos.coords.longitude;
+  } catch {}
+
+  const metaRef = doc(db, 'meta', 'global');
+  const metaSnap = await getDoc(metaRef);
+  let newTotal = 1;
+  if (metaSnap.exists()) {
+    await updateDoc(metaRef, { total: increment(1) });
+    newTotal = (metaSnap.data().total || 0) + 1;
+  } else {
+    await setDoc(metaRef, { total: 1 });
+  }
+
+  await addDoc(collection(db, 'logs'), {
+    uid: selectedPerson,
+    userName: u?.name || '',
+    lieu,
+    photo: beerPhotoData,
+    lat, lng,
+    ts: Date.now(),
+    num: newTotal,
+  });
+
+  await updateDoc(doc(db, 'users', selectedPerson), { count: increment(1) });
+
+  document.getElementById('screen-add').classList.remove('active');
+  spawnConfetti();
+  showToast(`🍺 +1 pour ${u?.name} ! Total : ${newTotal.toLocaleString('fr')}`);
+  if (newTotal % 100 === 0) setTimeout(() => showToast(`🎉 ${newTotal} BIÈRES ! ON AVANCE !`), 1500);
+};
+
+// ── FIL D'ACTU ─────────────────────────────────────────────────────────────
+window.renderFil = () => {
+  const list = document.getElementById('filList');
+  if (allLogs.length === 0) { list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Aucune bière encore !</div>'; return; }
+  const sorted = [...allLogs].reverse(); // oldest first like WhatsApp
+  list.innerHTML = sorted.map(log => {
+    const u = allUsers[log.uid] || { name: log.userName, avatar: null };
+    const isMine = log.uid === currentUser?.uid;
+    const date = new Date(log.ts);
+    const timeStr = date.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) + ' ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    return `
+      <div class="msg-bubble ${isMine?'mine':''}">
+        ${!isMine ? avatarEl(u,'msg-av') : ''}
+        <div class="msg-content">
+          ${!isMine ? `<div class="msg-name">${u.name}</div>` : ''}
+          <div class="msg-box">
+            ${log.photo ? `<img class="msg-photo" src="${log.photo}" loading="lazy">` : ''}
+            <div class="msg-text">${log.lieu || 'Lieu non précisé'} 📍</div>
+            <div class="msg-meta">
+              <span>${timeStr}</span>
+              <span class="msg-num">#${log.num}</span>
+            </div>
+          </div>
+        </div>
+        ${isMine ? avatarEl(u,'msg-av') : ''}
+      </div>
+    `;
+  }).join('');
+  // Scroll to bottom
+  setTimeout(() => { list.parentElement.scrollTop = list.parentElement.scrollHeight; }, 100);
+};
+
+// ── CARTE ──────────────────────────────────────────────────────────────────
+window.initMap = () => {
+  if (mapInitialized) {
+    updateMapMarkers();
+    return;
+  }
+  mapInitialized = true;
+  setTimeout(() => {
+    mapInstance = L.map('map').setView([46.5, 2.5], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19,
+    }).addTo(mapInstance);
+    updateMapMarkers();
+  }, 100);
+};
+
+function updateMapMarkers() {
+  if (!mapInstance) return;
+  // Clear existing markers
+  mapInstance.eachLayer(layer => { if (layer instanceof L.Marker) mapInstance.removeLayer(layer); });
+  
+  const withCoords = allLogs.filter(l => l.lat && l.lng);
+  document.getElementById('mapSub').textContent = `${withCoords.length} bières géolocalisées sur ${allLogs.length}`;
+
+  withCoords.forEach(log => {
+    const u = allUsers[log.uid] || { name: log.userName };
+    const icon = L.divIcon({ html: '🍺', className: 'beer-marker', iconSize: [30, 30] });
+    const marker = L.marker([log.lat, log.lng], { icon }).addTo(mapInstance);
+    const date = new Date(log.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    marker.bindPopup(`
+      <div style="font-family:Inter,sans-serif;min-width:160px;">
+        ${log.photo ? `<img src="${log.photo}" style="width:100%;border-radius:8px;margin-bottom:8px;max-height:120px;object-fit:cover;">` : ''}
+        <b style="font-size:14px;">${u.name}</b><br>
+        <span style="font-size:12px;color:#666;">${log.lieu||'Lieu non précisé'}</span><br>
+        <span style="font-size:11px;color:#999;">${date} · #${log.num}</span>
+      </div>
+    `);
+  });
+
+  if (withCoords.length > 0) {
+    const bounds = L.latLngBounds(withCoords.map(l => [l.lat, l.lng]));
+    mapInstance.fitBounds(bounds, { padding: [40, 40] });
+  }
+}
+
+// ── STATS ──────────────────────────────────────────────────────────────────
+window.renderStats = () => {
+  const t = globalTotal;
+  const pct = Math.min((t/10000)*100, 100);
+  document.getElementById('statsTotal').textContent = t.toLocaleString('fr');
+  document.getElementById('statsProgress').style.width = pct+'%';
+  document.getElementById('statsPct').textContent = pct.toFixed(2)+'% de la mission accomplie';
+  const sorted = Object.values(allUsers).sort((a,b)=>(b.count||0)-(a.count||0));
+  const max = sorted[0]?.count || 1;
+  document.getElementById('barChart').innerHTML = sorted.map(u => {
+    const p = ((u.count||0)/max)*100;
+    const av = u.avatar
+      ? `<div class="bar-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
+      : `<div class="bar-av">${u.name[0].toUpperCase()}</div>`;
+    return `<div class="bar-row">${av}<div class="bar-wrap"><div class="bar-name">${u.name} <span style="color:var(--gold);font-size:11px;">${u.count||0} 🍺</span></div><div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div></div><div class="bar-val">${u.count||0}</div></div>`;
+  }).join('');
+};
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+async function init() {
+  const savedUid = localStorage.getItem('currentUser');
+  if (savedUid) {
+    const snap = await getDoc(doc(db, 'users', savedUid));
     if (snap.exists()) {
-      // Utilisateur existant — connexion
-      currentUser = { uid, ...snap.data() };
-      if (pendingAvatar) {
-        await updateDoc(userRef, { avatar: pendingAvatar });
-        currentUser.avatar = pendingAvatar;
-      }
-    } else {
-      // Nouvel utilisateur
-      const userData = { name, avatar: pendingAvatar || null, count: 0, createdAt: Date.now() };
-      await setDoc(userRef, userData);
-      currentUser = { uid, ...userData };
-    }
-
-    localStorage.setItem('currentUser', uid);
-    initHome();
-    showScreen('home');
-    document.getElementById('bottomNav').style.display = 'flex';
-    showToast(`Bienvenue ${name} ! 🍺`);
-  };
-
-  // ── SWITCH USER ────────────────────────────────────────────────────────────
-  window.switchUser = () => {
-    const names = Object.values(allUsers).map(u => u.name).join(', ');
-    showToast('Recharge la page pour changer de compte');
-    localStorage.removeItem('currentUser');
-  };
-
-  // ── HOME INIT ──────────────────────────────────────────────────────────────
-  function initHome() {
-    // Header
-    const ha = document.getElementById('headerAvatar');
-    document.getElementById('headerName').textContent = currentUser.name;
-    if (currentUser.avatar) {
-      ha.innerHTML = `<img src="${currentUser.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
-    } else {
-      ha.textContent = currentUser.name[0].toUpperCase();
-    }
-    startListeners();
-  }
-
-  // ── REALTIME LISTENERS ─────────────────────────────────────────────────────
-  function startListeners() {
-    // Listen global total doc
-    onSnapshot(doc(db, 'meta', 'global'), snap => {
-      if (snap.exists()) {
-        globalTotal = snap.data().total || 0;
-        updateCounter(globalTotal);
-      }
-    });
-
-    // Listen users
-    onSnapshot(collection(db, 'users'), snap => {
-      snap.forEach(d => { allUsers[d.id] = { uid: d.id, ...d.data() }; });
-    });
-
-    // Listen logs (last 30)
-    const q = query(collection(db, 'logs'), orderBy('ts', 'desc'), limit(30));
-    onSnapshot(q, snap => {
-      logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderLogs();
-      document.getElementById('syncDot').className = 'sync-dot';
-    });
-  }
-
-  function updateCounter(t) {
-    const pct = Math.min((t / 10000) * 100, 100);
-    document.getElementById('totalCount').textContent = t.toLocaleString('fr');
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressPct').textContent = pct.toFixed(2) + '%';
-  }
-
-  function renderLogs() {
-    const list = document.getElementById('logList');
-    if (logs.length === 0) {
-      list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>';
+      currentUser = { uid: savedUid, ...snap.data() };
+      initHome();
+      showScreen('home');
+      document.getElementById('bottomNav').style.display = 'flex';
       return;
     }
-    list.innerHTML = logs.map(log => {
-      const u = allUsers[log.uid] || { name: log.userName, avatar: null };
-      const av = avatarHtml(u, 40, 'log-av');
-      const date = new Date(log.ts);
-      const timeStr = date.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' · ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-      return `
-        <div class="log-item">
-          ${av}
-          <div class="log-info">
-            <div class="log-name">${u.name}</div>
-            <div class="log-detail">${log.lieu || 'Lieu non précisé'} · ${timeStr}</div>
-          </div>
-          <div class="log-num">#${log.num}</div>
-        </div>
-      `;
-    }).join('');
   }
+  showScreen('onboard');
+}
 
-  // ── ADD BEER ───────────────────────────────────────────────────────────────
-  window.openAdd = () => {
-    const btn = document.getElementById('beerBtn');
-    btn.classList.add('beer-anim');
-    setTimeout(() => btn.classList.remove('beer-anim'), 400);
-    selectedPerson = currentUser.uid;
-    document.getElementById('lieuInput').value = '';
-    renderPersonsGrid();
-    document.getElementById('screen-add').classList.add('active');
-  };
-
-  window.closeAdd = (e) => {
-    if (e.target === document.getElementById('screen-add'))
-      document.getElementById('screen-add').classList.remove('active');
-  };
-
-  window.selectPerson = (uid) => {
-    selectedPerson = uid;
-    renderPersonsGrid();
-  };
-
-  function renderPersonsGrid() {
-    const grid = document.getElementById('personsGrid');
-    grid.innerHTML = Object.values(allUsers).map(u => {
-      const sel = u.uid === selectedPerson;
-      const av = u.avatar
-        ? `<div class="pc-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
-        : `<div class="pc-av">${u.name[0].toUpperCase()}</div>`;
-      return `<div class="person-card ${sel?'selected':''}" onclick="selectPerson('${u.uid}')">
-        ${av}
-        <div class="pc-name">${u.name}</div>
-      </div>`;
-    }).join('');
-  }
-
-  window.addBeer = async () => {
-    if (!selectedPerson) { showToast('Sélectionne quelqu\'un !'); return;  }
-    const lieu = document.getElementById('lieuInput').value.trim();
-    const u = allUsers[selectedPerson];
-
-    // Increment global total atomically
-    const metaRef = doc(db, 'meta', 'global');
-    const metaSnap = await getDoc(metaRef);
-    let newTotal = 1;
-    if (metaSnap.exists()) {
-      await updateDoc(metaRef, { total: increment(1) });
-      newTotal = (metaSnap.data().total || 0) + 1;
-    } else {
-      await setDoc(metaRef, { total: 1 });
-    }
-
-    // Add log
-    await addDoc(collection(db, 'logs'), {
-      uid: selectedPerson,
-      userName: u?.name || '',
-      lieu,
-      ts: Date.now(),
-      num: newTotal,
-    });
-
-    // Increment user count
-    await updateDoc(doc(db, 'users', selectedPerson), { count: increment(1) });
-
-    document.getElementById('screen-add').classList.remove('active');
-    spawnConfetti();
-    showToast(`🍺 +1 pour ${u?.name} ! Total : ${newTotal.toLocaleString('fr')}`);
-    if (newTotal % 100 === 0) setTimeout(() => showToast(`🎉 ${newTotal} BIÈRES ! ON AVANCE !`), 1500);
-  };
-
-  // ── STATS ──────────────────────────────────────────────────────────────────
-  function renderStats() {
-    const t = globalTotal;
-    const pct = Math.min((t/10000)*100,100);
-    document.getElementById('statsTotal').textContent = t.toLocaleString('fr');
-    document.getElementById('statsProgress').style.width = pct+'%';
-    document.getElementById('statsPct').textContent = pct.toFixed(2)+'% de la mission accomplie';
-
-    const sorted = Object.values(allUsers).sort((a,b)=>(b.count||0)-(a.count||0));
-    const max = sorted[0]?.count || 1;
-    document.getElementById('barChart').innerHTML = sorted.map(u => {
-      const p = ((u.count||0)/max)*100;
-      const av = u.avatar
-        ? `<div class="bar-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
-        : `<div class="bar-av">${u.name[0].toUpperCase()}</div>`;
-      return `<div class="bar-row">
-        ${av}
-        <div class="bar-wrap">
-          <div class="bar-name">${u.name} <span style="color:var(--gold);font-size:11px;">${u.count||0} 🍺</span></div>
-          <div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div>
-        </div>
-        <div class="bar-val">${u.count||0}</div>
-      </div>`;
-    }).join('');
-  }
-
-  // ── INIT ───────────────────────────────────────────────────────────────────
-  async function init() {
-    // Check if already logged in
-    const savedUid = localStorage.getItem('currentUser');
-    if (savedUid) {
-      const snap = await getDoc(doc(db, 'users', savedUid));
-      if (snap.exists()) {
-        currentUser = { uid: savedUid, ...snap.data() };
-        initHome();
-        showScreen('home');
-        document.getElementById('bottomNav').style.display = 'flex';
-        return;
-      }
-    }
-    showScreen('onboard');
-  }
-
-  // Lance après 1s (pour voir le loading screen)
-  setTimeout(init, 1000);
+setTimeout(init, 1000);
 </script>
 </body>
 </html>
