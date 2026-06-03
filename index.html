@@ -20,624 +20,163 @@
       --white:      #ffffff;
       --red:        #c0392b;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: var(--green-dark); color: var(--white); min-height: 100vh; overflow-x: hidden; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--green-dark);
-      color: var(--white);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── SCREENS ── */
     .screen { display: none; min-height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
 
-    /* ── ONBOARDING ── */
+    /* LOADING */
+    #screen-loading {
+      background: linear-gradient(160deg, var(--green-dark), var(--green));
+      align-items: center; justify-content: center; text-align: center;
+    }
+    .loading-logo { font-family: 'Bebas Neue', sans-serif; font-size: 80px; color: var(--gold-light); animation: pulse 1.5s ease-in-out infinite; }
+    .loading-sub { font-size: 14px; color: rgba(255,255,255,0.4); letter-spacing: 3px; margin-top: 8px; }
+    .loading-spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 24px auto 0; }
+
+    /* ONBOARDING */
     #screen-onboard {
       background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 60%, var(--green-mid) 100%);
-      align-items: center;
-      justify-content: center;
-      padding: 40px 24px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      align-items: center; justify-content: center; padding: 40px 24px; text-align: center;
     }
-
-    #screen-onboard::before {
-      content: '';
-      position: absolute;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(200,164,21,0.15) 0%, transparent 70%);
-      top: -100px; right: -100px;
-      border-radius: 50%;
-    }
-
-    .onboard-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 72px;
-      color: var(--gold-light);
-      line-height: 1;
-      margin-bottom: 4px;
-      text-shadow: 0 4px 20px rgba(200,164,21,0.4);
-      animation: pop 0.6s ease;
-    }
-
-    .onboard-sub {
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 48px;
-    }
-
-    .avatar-picker {
-      width: 110px; height: 110px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      border: 3px dashed var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      margin: 0 auto 20px;
-      overflow: hidden;
-      transition: all 0.2s;
-      position: relative;
-    }
+    .onboard-logo { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--gold-light); line-height: 1; margin-bottom: 4px; text-shadow: 0 4px 20px rgba(200,164,21,0.4); }
+    .onboard-sub { font-size: 14px; color: rgba(255,255,255,0.5); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; }
+    .avatar-picker { width: 110px; height: 110px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 3px dashed var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; margin: 0 auto 12px; overflow: hidden; transition: all 0.2s; }
     .avatar-picker:active { transform: scale(0.95); }
-    .avatar-picker img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-picker span { font-size: 40px; }
-    .avatar-picker input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-
+    .avatar-picker img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .avatar-pick-hint { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 28px; }
     .onboard-form { width: 100%; max-width: 320px; }
-
-    .field {
-      background: rgba(255,255,255,0.08);
-      border: 1.5px solid rgba(255,255,255,0.15);
-      border-radius: 16px;
-      padding: 16px 20px;
-      width: 100%;
-      color: var(--white);
-      font-size: 18px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 16px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
+    .field { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 16px 20px; width: 100%; color: var(--white); font-size: 18px; font-family: 'Inter', sans-serif; font-weight: 600; text-align: center; margin-bottom: 16px; outline: none; transition: border-color 0.2s; }
     .field::placeholder { color: rgba(255,255,255,0.3); font-weight: 400; }
     .field:focus { border-color: var(--gold); }
+    .btn-primary { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; border: none; border-radius: 16px; cursor: pointer; box-shadow: 0 8px 24px rgba(200,164,21,0.4); transition: all 0.2s; }
+    .btn-primary:active { transform: scale(0.97); }
 
-    .btn-primary {
-      width: 100%;
-      padding: 18px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--green-dark);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px;
-      letter-spacing: 2px;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      box-shadow: 0 8px 24px rgba(200,164,21,0.4);
-      transition: all 0.2s;
-    }
-    .btn-primary:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(200,164,21,0.3); }
+    /* HOME */
+    #screen-home { background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%); overflow-y: auto; padding-bottom: 100px; }
+    .home-header { display: flex; align-items: center; justify-content: space-between; padding: 56px 20px 16px; }
+    .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold-light); letter-spacing: 2px; }
+    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border-radius: 30px; padding: 6px 14px 6px 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+    .pill-av { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--green-mid); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; overflow: hidden; }
+    .pill-av img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* ── MAIN HOME ── */
-    #screen-home {
-      background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%);
-    }
+    .counter-hero { text-align: center; padding: 8px 20px 20px; }
+    .counter-label { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+    .counter-number { font-family: 'Bebas Neue', sans-serif; font-size: 88px; line-height: 1; color: var(--gold-light); text-shadow: 0 0 40px rgba(200,164,21,0.5); animation: pulse 2s ease-in-out infinite; }
+    .counter-goal { font-size: 14px; color: rgba(255,255,255,0.4); margin-top: 4px; }
 
-    .home-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 56px 20px 16px;
-    }
+    .progress-wrap { margin: 0 20px 24px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 100px; height: 12px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 100px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+    .progress-pct { text-align: right; font-size: 12px; color: var(--gold); font-weight: 700; margin-top: 6px; }
 
-    .header-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      color: var(--gold-light);
-      letter-spacing: 2px;
-    }
+    .beer-zone { display: flex; align-items: center; justify-content: center; padding: 0 20px 20px; }
+    .beer-btn { position: relative; width: 180px; height: 180px; cursor: pointer; animation: float 3s ease-in-out infinite; }
+    .beer-btn img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(200,164,21,0.5)); }
+    .beer-btn:active img { transform: scale(0.9); }
+    .beer-glow { position: absolute; width: 120px; height: 40px; background: rgba(200,164,21,0.3); bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 50%; filter: blur(16px); }
+    .tap-hint { text-align: center; font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
 
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 30px;
-      padding: 6px 14px 6px 6px;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .user-pill img, .user-pill .pill-avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: var(--green-mid);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-    .user-pill span { font-size: 14px; font-weight: 600; }
-
-    /* Counter hero */
-    .counter-hero {
-      text-align: center;
-      padding: 8px 20px 24px;
-    }
-
-    .counter-label {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .counter-number {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 88px;
-      line-height: 1;
-      color: var(--gold-light);
-      text-shadow: 0 0 40px rgba(200,164,21,0.5);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .counter-goal {
-      font-size: 14px;
-      color: rgba(255,255,255,0.4);
-      margin-top: 4px;
-    }
-
-    .progress-wrap {
-      margin: 0 20px 28px;
-    }
-
-    .progress-track {
-      background: rgba(255,255,255,0.1);
-      border-radius: 100px;
-      height: 12px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-      border-radius: 100px;
-      transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
-      position: relative;
-    }
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 0; bottom: 0;
-      width: 20px;
-      background: rgba(255,255,255,0.4);
-      border-radius: 100px;
-      filter: blur(4px);
-    }
-
-    .progress-pct {
-      text-align: right;
-      font-size: 12px;
-      color: var(--gold);
-      font-weight: 700;
-      margin-top: 6px;
-    }
-
-    /* Beer clic zone */
-    .beer-zone {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 20px 28px;
-    }
-
-    .beer-btn {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      cursor: pointer;
-      user-select: none;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    .beer-btn img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 20px 40px rgba(200,164,21,0.5));
-      transition: transform 0.1s;
-    }
-
-    .beer-btn:active img { transform: scale(0.92); }
-
-    .beer-glow {
-      position: absolute;
-      width: 140px; height: 140px;
-      background: radial-gradient(circle, rgba(200,164,21,0.3) 0%, transparent 70%);
-      bottom: 10px; left: 50%; transform: translateX(-50%);
-      border-radius: 50%;
-      filter: blur(20px);
-    }
-
-    .tap-hint {
-      text-align: center;
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 28px;
-      letter-spacing: 1px;
-    }
-
-    /* Recent log */
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      color: var(--gold-light);
-      letter-spacing: 2px;
-      padding: 0 20px;
-      margin-bottom: 12px;
-    }
-
-    .log-list {
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 120px;
-    }
-
-    .log-item {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .log-avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: var(--green-mid);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold-light); letter-spacing: 2px; padding: 0 20px; margin-bottom: 12px; }
+    .log-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+    .log-item { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+    .log-av { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--green-mid); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+    .log-av img { width: 100%; height: 100%; object-fit: cover; }
     .log-info { flex: 1; }
     .log-name { font-weight: 700; font-size: 14px; }
     .log-detail { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+    .log-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold-light); }
 
-    .log-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      color: var(--gold-light);
-    }
-
-    /* ── ADD MODAL ── */
-    #screen-add {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 100;
-      backdrop-filter: blur(4px);
-    }
+    /* ADD MODAL */
+    #screen-add { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: flex-end; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
     #screen-add.active { display: flex; }
-
-    .modal-sheet {
-      background: linear-gradient(160deg, #0f4500, #1a5c00);
-      border-top-left-radius: 28px;
-      border-top-right-radius: 28px;
-      width: 100%;
-      max-width: 480px;
-      padding: 12px 24px 40px;
-      border-top: 1px solid rgba(200,164,21,0.3);
-      animation: slideUp 0.3s ease;
-    }
-
-    .modal-handle {
-      width: 40px; height: 4px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 2px;
-      margin: 0 auto 20px;
-    }
-
-    .modal-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px;
-      color: var(--gold-light);
-      letter-spacing: 2px;
-      margin-bottom: 20px;
-    }
-
-    .persons-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .person-card {
-      background: rgba(255,255,255,0.07);
-      border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 12px 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .person-card.selected {
-      border-color: var(--gold);
-      background: rgba(200,164,21,0.15);
-    }
-    .person-card img, .person-card .pc-avatar {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: var(--green-mid);
-      margin: 0 auto 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-    }
-    .person-card .pc-name { font-size: 12px; font-weight: 600; }
-
-    .field-label {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .btn-add {
-      width: 100%;
-      padding: 18px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--green-dark);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 2px;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-      box-shadow: 0 8px 24px rgba(200,164,21,0.4);
-      transition: all 0.15s;
-    }
+    .modal-sheet { background: linear-gradient(160deg, #0f4500, #1a5c00); border-top-left-radius: 28px; border-top-right-radius: 28px; width: 100%; max-width: 480px; padding: 12px 24px 40px; border-top: 1px solid rgba(200,164,21,0.3); animation: slideUp 0.3s ease; max-height: 85vh; overflow-y: auto; }
+    .modal-handle { width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 0 auto 20px; }
+    .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--gold-light); letter-spacing: 2px; margin-bottom: 20px; }
+    .field-label { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .persons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .person-card { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .person-card.selected { border-color: var(--gold); background: rgba(200,164,21,0.15); }
+    .pc-av { width: 52px; height: 52px; border-radius: 50%; background: var(--green-mid); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; overflow: hidden; }
+    .pc-av img { width: 100%; height: 100%; object-fit: cover; }
+    .pc-name { font-size: 12px; font-weight: 600; }
+    .btn-add { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; border: none; border-radius: 16px; cursor: pointer; margin-top: 20px; box-shadow: 0 8px 24px rgba(200,164,21,0.4); }
     .btn-add:active { transform: scale(0.97); }
 
-    /* ── STATS SCREEN ── */
-    #screen-stats {
-      background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%);
-      padding: 56px 20px 120px;
-      overflow-y: auto;
-    }
-
-    .stats-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 40px;
-      color: var(--gold-light);
-      letter-spacing: 3px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 14px;
-    }
-
-    .stat-card-title {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-
-    /* Bar chart */
-    .bar-chart { display: flex; flex-direction: column; gap: 12px; }
-
-    .bar-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .bar-person {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: var(--green-mid);
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-
+    /* STATS */
+    #screen-stats { background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%); padding: 56px 20px 120px; overflow-y: auto; }
+    .stats-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--gold-light); letter-spacing: 3px; margin-bottom: 24px; }
+    .stat-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 14px; }
+    .stat-card-title { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+    .bar-chart { display: flex; flex-direction: column; gap: 14px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; }
+    .bar-av { width: 36px; height: 36px; border-radius: 50%; background: var(--green-mid); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; overflow: hidden; }
+    .bar-av img { width: 100%; height: 100%; object-fit: cover; }
     .bar-wrap { flex: 1; }
     .bar-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+    .bar-track { background: rgba(255,255,255,0.08); border-radius: 100px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 100px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+    .bar-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold-light); width: 48px; text-align: right; }
 
-    .bar-track {
-      background: rgba(255,255,255,0.08);
-      border-radius: 100px;
-      height: 10px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-      border-radius: 100px;
-      transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
-    }
-
-    .bar-val {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      color: var(--gold-light);
-      width: 48px;
-      text-align: right;
-    }
-
-    /* ── RULES SCREEN ── */
-    #screen-rules {
-      background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%);
-      padding: 56px 20px 120px;
-      overflow-y: auto;
-    }
-
-    .rules-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 40px;
-      color: var(--gold-light);
-      letter-spacing: 3px;
-      margin-bottom: 24px;
-    }
-
-    .rules-card {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(200,164,21,0.3);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 14px;
-    }
-
+    /* RULES */
+    #screen-rules { background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 100%); padding: 56px 20px 120px; overflow-y: auto; }
+    .rules-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--gold-light); letter-spacing: 3px; margin-bottom: 24px; }
+    .rules-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(200,164,21,0.2); border-radius: 20px; padding: 20px; margin-bottom: 14px; }
     .rules-section { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); margin-bottom: 10px; }
-    .rules-text { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.8); }
-    .rules-text b { color: var(--gold-light); }
-
-    .rule-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
+    .rule-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
     .rule-emoji { font-size: 18px; flex-shrink: 0; }
     .rule-text { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.85); }
+    .rule-text b { color: var(--gold-light); }
 
-    /* ── BOTTOM NAV ── */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(10, 61, 0, 0.95);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(200,164,21,0.2);
-      display: flex;
-      padding: 10px 0 24px;
-      z-index: 50;
-    }
-
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      padding: 6px 0;
-      transition: all 0.2s;
-    }
-
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,61,0,0.97); backdrop-filter: blur(20px); border-top: 1px solid rgba(200,164,21,0.2); display: flex; padding: 10px 0 24px; z-index: 50; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 0; }
     .nav-icon { font-size: 24px; opacity: 0.4; transition: all 0.2s; }
-    .nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; }
+    .nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); }
     .nav-item.active .nav-icon { opacity: 1; }
     .nav-item.active .nav-label { color: var(--gold-light); }
 
-    /* ── TOAST ── */
-    .toast {
-      position: fixed;
-      top: 60px;
-      left: 50%; transform: translateX(-50%) translateY(-20px);
-      background: var(--gold);
-      color: var(--green-dark);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 1px;
-      padding: 12px 24px;
-      border-radius: 100px;
-      opacity: 0;
-      transition: all 0.3s;
-      pointer-events: none;
-      z-index: 200;
-      white-space: nowrap;
-    }
+    /* TOAST */
+    .toast { position: fixed; top: 60px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--gold); color: var(--green-dark); font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; padding: 12px 24px; border-radius: 100px; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 200; white-space: nowrap; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── ANIMATIONS ── */
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
+    /* SYNC INDICATOR */
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); display: inline-block; margin-left: 6px; animation: blink 2s ease-in-out infinite; }
+    .sync-dot.offline { background: #e74c3c; animation: none; }
 
-    @keyframes pop {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes pulse {
-      0%, 100% { text-shadow: 0 0 40px rgba(200,164,21,0.5); }
-      50% { text-shadow: 0 0 60px rgba(200,164,21,0.8); }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    @keyframes beerPop {
-      0% { transform: scale(1) translateY(0); }
-      40% { transform: scale(0.88) translateY(8px); }
-      70% { transform: scale(1.08) translateY(-8px); }
-      100% { transform: scale(1) translateY(0); }
-    }
-
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes pulse { 0%, 100% { text-shadow: 0 0 40px rgba(200,164,21,0.5); } 50% { text-shadow: 0 0 60px rgba(200,164,21,0.8); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes beerPop { 0% { transform: scale(1); } 40% { transform: scale(0.88); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
     .beer-anim { animation: beerPop 0.4s ease !important; }
-
-    /* Confetti particle */
-    .confetti {
-      position: fixed;
-      pointer-events: none;
-      z-index: 300;
-      border-radius: 2px;
-      animation: confettiFall 1.2s ease-out forwards;
-    }
-    @keyframes confettiFall {
-      0% { opacity: 1; transform: translateY(0) rotate(0deg); }
-      100% { opacity: 0; transform: translateY(300px) rotate(720deg); }
-    }
+    .confetti { position: fixed; pointer-events: none; z-index: 300; border-radius: 2px; animation: confettiFall 1.2s ease-out forwards; }
+    @keyframes confettiFall { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(300px) rotate(720deg); } }
   </style>
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- LOADING -->
+<div class="screen active" id="screen-loading">
+  <div class="loading-logo">🍺</div>
+  <div class="loading-sub">Connexion en cours...</div>
+  <div class="loading-spinner"></div>
+</div>
+
 <!-- ONBOARDING -->
-<div class="screen active" id="screen-onboard">
+<div class="screen" id="screen-onboard">
   <div class="onboard-logo">🍺 10 000</div>
   <div class="onboard-sub">La mission commence</div>
-
   <div class="avatar-picker" id="avatarPicker" onclick="document.getElementById('avatarInput').click()">
-    <span id="avatarPlaceholder">📸</span>
-    <img id="avatarPreview" style="display:none">
+    <span id="avatarPlaceholder" style="font-size:40px;">📸</span>
+    <img id="avatarPreview">
     <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
   </div>
-  <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:24px;">Ajoute ta photo</p>
-
+  <p class="avatar-pick-hint">Ajoute ta photo</p>
   <div class="onboard-form">
     <input class="field" id="nameInput" type="text" placeholder="Ton prénom" maxlength="20" autocomplete="off">
     <button class="btn-primary" onclick="createProfile()">ENTRER DANS LA LÉGENDE 🍺</button>
@@ -647,35 +186,30 @@
 <!-- HOME -->
 <div class="screen" id="screen-home">
   <div class="home-header">
-    <div class="header-title">🍺 LA MISSION</div>
+    <div class="header-title">🍺 LA MISSION <span class="sync-dot" id="syncDot"></span></div>
     <div class="user-pill" onclick="switchUser()">
-      <div class="pill-avatar" id="headerAvatar">👤</div>
+      <div class="pill-av" id="headerAvatar">👤</div>
       <span id="headerName">Moi</span>
     </div>
   </div>
-
   <div class="counter-hero">
     <div class="counter-label">bières bues</div>
     <div class="counter-number" id="totalCount">0</div>
     <div class="counter-goal">sur 10 000</div>
   </div>
-
   <div class="progress-wrap">
     <div class="progress-track">
       <div class="progress-fill" id="progressFill" style="width:0%"></div>
     </div>
     <div class="progress-pct" id="progressPct">0%</div>
   </div>
-
   <div class="beer-zone">
     <div class="beer-btn" id="beerBtn" onclick="openAdd()">
       <div class="beer-glow"></div>
       <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f37a.svg" alt="bière">
     </div>
   </div>
-
   <div class="tap-hint">Clique sur la bière pour enregistrer 🍺</div>
-
   <div class="section-title">DERNIÈRES BIÈRES</div>
   <div class="log-list" id="logList">
     <div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>
@@ -687,13 +221,10 @@
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">QUI A BU ? 🍺</div>
-
     <div class="field-label">Sélectionne la personne</div>
     <div class="persons-grid" id="personsGrid"></div>
-
     <div class="field-label">📍 Lieu</div>
     <input class="field" id="lieuInput" type="text" placeholder="Bar, chez quelqu'un..." style="text-align:left;margin-bottom:0;">
-
     <button class="btn-add" onclick="addBeer()">+ 1 BIÈRE 🍺</button>
   </div>
 </div>
@@ -701,12 +232,10 @@
 <!-- STATS -->
 <div class="screen" id="screen-stats">
   <div class="stats-title">📊 STATS</div>
-
   <div class="stat-card">
     <div class="stat-card-title">🏆 Classement</div>
     <div class="bar-chart" id="barChart"></div>
   </div>
-
   <div class="stat-card">
     <div class="stat-card-title">📈 Progression globale</div>
     <div style="text-align:center;padding:10px 0;">
@@ -723,12 +252,10 @@
 <!-- RULES -->
 <div class="screen" id="screen-rules">
   <div class="rules-title">📜 LES RÈGLES</div>
-
   <div class="rules-card">
     <div class="rules-section">LA MISSION</div>
-    <p class="rules-text">Nous nous lançons dans une mission simple mais ambitieuse : boire <b>10 000 bières 😈</b></p>
+    <p class="rule-text">Nous nous lançons dans une mission simple mais ambitieuse : boire <b>10 000 bières 😈</b></p>
   </div>
-
   <div class="rules-card">
     <div class="rules-section">MODE D'EMPLOI</div>
     <div class="rule-item"><div class="rule-emoji">1️⃣</div><div class="rule-text">Prends une photo de ta bière <b>pleine</b></div></div>
@@ -736,7 +263,6 @@
     <div class="rule-item"><div class="rule-emoji">3️⃣</div><div class="rule-text">Indique le lieu</div></div>
     <div class="rule-item"><div class="rule-emoji">4️⃣</div><div class="rule-text">Ajoute le total cumulatif !!</div></div>
   </div>
-
   <div class="rules-card">
     <div class="rules-section">⚠️ RÈGLES SACRÉES</div>
     <div class="rule-item"><div class="rule-emoji">📸</div><div class="rule-text"><b>1 photo = 1 bière</b></div></div>
@@ -744,294 +270,340 @@
     <div class="rule-item"><div class="rule-emoji">🤫</div><div class="rule-text">Pas de blabla dans le fil</div></div>
     <div class="rule-item"><div class="rule-emoji">☠️</div><div class="rule-text">Non respect des règles = <b>BAN</b></div></div>
   </div>
-
   <div class="rules-card">
     <div class="rules-section">✅ CE QUI COMPTE</div>
     <div class="rule-item"><div class="rule-emoji">🍺</div><div class="rule-text">1 bière bouteille pleine</div></div>
     <div class="rule-item"><div class="rule-emoji">🍻</div><div class="rule-text">Pintes tolérées</div></div>
   </div>
-
-  <div class="rules-card" style="border-color:rgba(200,164,21,0.5);background:rgba(200,164,21,0.08);">
+  <div class="rules-card" style="border-color:rgba(200,164,21,0.4);background:rgba(200,164,21,0.06);">
     <div class="rules-section">🏆 À 10 000 BIÈRES</div>
-    <p class="rules-text">→ Grand rassemblement pour célébrer cette <b>masterclasse 😌</b></p>
-    <p class="rules-text" style="margin-top:12px;font-style:italic;color:rgba(255,255,255,0.6);">"Est-ce qu'on est prêts à aller chercher les 10 000 avant le 1er janvier ?" Moi, j'y crois. Alors ce soir… on entre sur le terrain. Et on ouvre le score. 🍺</p>
+    <p class="rule-text">→ Grand rassemblement pour célébrer cette <b>masterclasse 😌</b></p>
+    <p class="rule-text" style="margin-top:12px;font-style:italic;color:rgba(255,255,255,0.5);">"Est-ce qu'on est prêts à aller chercher les 10 000 avant le 1er janvier ?" Moi, j'y crois. Alors ce soir… on entre sur le terrain. Et on ouvre le score. 🍺</p>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- BOTTOM NAV (hidden until logged in) -->
 <div class="bottom-nav" id="bottomNav" style="display:none">
-  <div class="nav-item active" onclick="showScreen('home', this)">
+  <div class="nav-item active" onclick="showTab('home', this)">
     <div class="nav-icon">🍺</div>
     <div class="nav-label">Compteur</div>
   </div>
-  <div class="nav-item" onclick="showScreen('stats', this)">
+  <div class="nav-item" onclick="showTab('stats', this)">
     <div class="nav-icon">📊</div>
     <div class="nav-label">Stats</div>
   </div>
-  <div class="nav-item" onclick="showScreen('rules', this)">
+  <div class="nav-item" onclick="showTab('rules', this)">
     <div class="nav-icon">📜</div>
     <div class="nav-label">Règles</div>
   </div>
 </div>
 
-<script>
-// ── STATE ──────────────────────────────────────────────────────────────────
-let state = {
-  users: [],       // { name, avatar, count }
-  logs: [],        // { user, lieu, ts }
-  currentUser: 0,
-};
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, doc, addDoc, onSnapshot, orderBy, query, limit, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-function load() {
-  const saved = localStorage.getItem('bieres10k');
-  if (saved) { state = JSON.parse(saved); return true; }
-  return false;
-}
-
-function save() { localStorage.setItem('bieres10k', JSON.stringify(state)); }
-
-function total() { return state.logs.length; }
-
-// ── ONBOARDING ─────────────────────────────────────────────────────────────
-let pendingAvatar = null;
-
-function previewAvatar(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingAvatar = e.target.result;
-    document.getElementById('avatarPreview').src = pendingAvatar;
-    document.getElementById('avatarPreview').style.display = 'block';
-    document.getElementById('avatarPlaceholder').style.display = 'none';
+  const firebaseConfig = {
+    apiKey: "AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
+    authDomain: "bieres-1458b.firebaseapp.com",
+    projectId: "bieres-1458b",
+    storageBucket: "bieres-1458b.firebasestorage.app",
+    messagingSenderId: "473243479365",
+    appId: "1:473243479365:web:059399eef3abb580f8e22c"
   };
-  reader.readAsDataURL(file);
-}
 
-function createProfile() {
-  const name = document.getElementById('nameInput').value.trim();
-  if (!name) { showToast('Entre ton prénom !'); return; }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  const existing = load();
-  if (!existing) state = { users: [], logs: [], currentUser: 0 };
+  // ── State local ────────────────────────────────────────────────────────────
+  let currentUser = null;
+  let allUsers = {};
+  let logs = [];
+  let globalTotal = 0;
+  let selectedPerson = null;
+  let pendingAvatar = null;
 
-  // Vérifie si le prénom existe déjà
-  const idx = state.users.findIndex(u => u.name.toLowerCase() === name.toLowerCase());
-  if (idx >= 0) {
-    state.currentUser = idx;
-    if (pendingAvatar) state.users[idx].avatar = pendingAvatar;
-  } else {
-    state.users.push({ name, avatar: pendingAvatar, count: 0 });
-    state.currentUser = state.users.length - 1;
-  }
+  // ── Helpers UI ─────────────────────────────────────────────────────────────
+  window.showToast = (msg) => {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  };
 
-  save();
-  initHome();
-  showScreen('home');
-  document.getElementById('bottomNav').style.display = 'flex';
-}
-
-// ── HOME ───────────────────────────────────────────────────────────────────
-function initHome() {
-  load();
-  const t = total();
-  const pct = Math.min((t / 10000) * 100, 100);
-
-  document.getElementById('totalCount').textContent = t.toLocaleString('fr');
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = pct.toFixed(2) + '%';
-
-  // Header user
-  const cu = state.users[state.currentUser];
-  if (cu) {
-    const ha = document.getElementById('headerAvatar');
-    document.getElementById('headerName').textContent = cu.name;
-    if (cu.avatar) {
-      ha.innerHTML = `<img src="${cu.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
-    } else {
-      ha.textContent = cu.name[0].toUpperCase();
+  window.spawnConfetti = () => {
+    const colors = ['#c8a415','#f0c830','#ffffff','#4caf00'];
+    for (let i = 0; i < 30; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.cssText = `left:${Math.random()*100}vw;top:${50+Math.random()*20}px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.4}s;animation-duration:${0.8+Math.random()*0.6}s;`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1400);
     }
+  };
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
   }
 
-  // Logs
-  renderLogs();
-}
+  window.showTab = (name, el) => {
+    showScreen(name);
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    if (name === 'stats') renderStats();
+  };
 
-function renderLogs() {
-  const list = document.getElementById('logList');
-  const logs = [...state.logs].reverse().slice(0, 20);
-  if (logs.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>';
-    return;
+  function avatarHtml(user, size=40, cls='log-av') {
+    if (user?.avatar) return `<div class="${cls}" style="padding:0;"><img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`;
+    return `<div class="${cls}">${(user?.name||'?')[0].toUpperCase()}</div>`;
   }
-  list.innerHTML = logs.map(log => {
-    const u = state.users.find(u => u.name === log.user);
-    const avatarHtml = u?.avatar
-      ? `<img class="log-avatar" src="${u.avatar}">`
-      : `<div class="log-avatar">${log.user[0].toUpperCase()}</div>`;
-    const date = new Date(log.ts);
-    const timeStr = date.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' · ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    return `
-      <div class="log-item">
-        ${avatarHtml}
-        <div class="log-info">
-          <div class="log-name">${log.user}</div>
-          <div class="log-detail">${log.lieu || 'Lieu non précisé'} · ${timeStr}</div>
-        </div>
-        <div class="log-num">#${log.num}</div>
-      </div>
-    `;
-  }).join('');
-}
 
-// ── ADD MODAL ──────────────────────────────────────────────────────────────
-let selectedPerson = null;
+  // ── Avatar onboard ─────────────────────────────────────────────────────────
+  window.previewAvatar = (input) => {
+    const file = input.files[0];
+    if (!file) return;
+    // Resize to max 200px to keep Firestore small
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const max = 200;
+        let w = img.width, h = img.height;
+        if (w > h) { if (w > max) { h = h*max/w; w = max; } }
+        else { if (h > max) { w = w*max/h; h = max; } }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        pendingAvatar = canvas.toDataURL('image/jpeg', 0.7);
+        document.getElementById('avatarPreview').src = pendingAvatar;
+        document.getElementById('avatarPreview').style.display = 'block';
+        document.getElementById('avatarPlaceholder').style.display = 'none';
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
 
-function openAdd() {
-  // Animate beer
-  const btn = document.getElementById('beerBtn');
-  btn.classList.add('beer-anim');
-  setTimeout(() => btn.classList.remove('beer-anim'), 400);
+  // ── CREATE PROFILE ─────────────────────────────────────────────────────────
+  window.createProfile = async () => {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) { showToast('Entre ton prénom !'); return; }
 
-  selectedPerson = state.users[state.currentUser]?.name || null;
-  document.getElementById('lieuInput').value = '';
-  renderPersonsGrid();
-  document.getElementById('screen-add').classList.add('active');
-}
+    const uid = name.toLowerCase().replace(/\s+/g,'_');
+    const userRef = doc(db, 'users', uid);
+    const snap = await getDoc(userRef);
 
-function closeAdd(e) {
-  if (e.target === document.getElementById('screen-add')) {
-    document.getElementById('screen-add').classList.remove('active');
-  }
-}
+    if (snap.exists()) {
+      // Utilisateur existant — connexion
+      currentUser = { uid, ...snap.data() };
+      if (pendingAvatar) {
+        await updateDoc(userRef, { avatar: pendingAvatar });
+        currentUser.avatar = pendingAvatar;
+      }
+    } else {
+      // Nouvel utilisateur
+      const userData = { name, avatar: pendingAvatar || null, count: 0, createdAt: Date.now() };
+      await setDoc(userRef, userData);
+      currentUser = { uid, ...userData };
+    }
 
-function renderPersonsGrid() {
-  const grid = document.getElementById('personsGrid');
-  grid.innerHTML = state.users.map(u => {
-    const sel = u.name === selectedPerson;
-    const avatarHtml = u.avatar
-      ? `<img src="${u.avatar}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;margin:0 auto 8px;display:block;">`
-      : `<div class="pc-avatar">${u.name[0].toUpperCase()}</div>`;
-    return `
-      <div class="person-card ${sel ? 'selected' : ''}" onclick="selectPerson('${u.name}')">
-        ${avatarHtml}
-        <div class="pc-name">${u.name}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-function selectPerson(name) {
-  selectedPerson = name;
-  renderPersonsGrid();
-}
-
-function addBeer() {
-  if (!selectedPerson) { showToast('Sélectionne quelqu\'un !'); return; }
-  const lieu = document.getElementById('lieuInput').value.trim();
-
-  const t = total() + 1;
-  state.logs.push({ user: selectedPerson, lieu, ts: Date.now(), num: t });
-
-  // Update user count
-  const u = state.users.find(u => u.name === selectedPerson);
-  if (u) u.count = (u.count || 0) + 1;
-
-  save();
-  document.getElementById('screen-add').classList.remove('active');
-
-  // Update UI
-  initHome();
-  spawnConfetti();
-  showToast(`🍺 +1 pour ${selectedPerson} ! Total : ${t.toLocaleString('fr')}`);
-
-  // Milestone
-  if (t % 100 === 0) setTimeout(() => showToast(`🎉 ${t} BIÈRES ! ON AVANCE !`), 1500);
-}
-
-// ── STATS ──────────────────────────────────────────────────────────────────
-function renderStats() {
-  const t = total();
-  const pct = Math.min((t / 10000) * 100, 100);
-  document.getElementById('statsTotal').textContent = t.toLocaleString('fr');
-  document.getElementById('statsProgress').style.width = pct + '%';
-  document.getElementById('statsPct').textContent = pct.toFixed(2) + '% de la mission accomplie';
-
-  const sorted = [...state.users].sort((a,b) => (b.count||0) - (a.count||0));
-  const max = sorted[0]?.count || 1;
-
-  document.getElementById('barChart').innerHTML = sorted.map(u => {
-    const pct = ((u.count||0) / max) * 100;
-    const avatarHtml = u.avatar
-      ? `<img class="bar-person" src="${u.avatar}">`
-      : `<div class="bar-person">${u.name[0].toUpperCase()}</div>`;
-    return `
-      <div class="bar-row">
-        ${avatarHtml}
-        <div class="bar-wrap">
-          <div class="bar-name">${u.name}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-        </div>
-        <div class="bar-val">${u.count || 0}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-// ── NAV ────────────────────────────────────────────────────────────────────
-function showScreen(name, navEl) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (navEl) navEl.classList.add('active');
-  if (name === 'stats') renderStats();
-  if (name === 'home') initHome();
-}
-
-function switchUser() {
-  // Demander quel utilisateur on est
-  const names = state.users.map((u,i) => `${i+1}. ${u.name}`).join('\n');
-  const choice = prompt(`Qui es-tu ?\n${names}\n\nEntre le numéro ou ton prénom :`);
-  if (!choice) return;
-  const idx = state.users.findIndex((u,i) => String(i+1) === choice.trim() || u.name.toLowerCase() === choice.trim().toLowerCase());
-  if (idx >= 0) { state.currentUser = idx; save(); initHome(); showToast(`Bienvenue ${state.users[idx].name} ! 🍺`); }
-}
-
-// ── FX ─────────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-function spawnConfetti() {
-  const colors = ['#c8a415','#f0c830','#ffffff','#4caf00','#2d8a00'];
-  for (let i = 0; i < 30; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti';
-    el.style.cssText = `
-      left: ${Math.random()*100}vw;
-      top: ${50 + Math.random()*20}px;
-      width: ${6 + Math.random()*8}px;
-      height: ${6 + Math.random()*8}px;
-      background: ${colors[Math.floor(Math.random()*colors.length)]};
-      animation-delay: ${Math.random()*0.4}s;
-      animation-duration: ${0.8 + Math.random()*0.6}s;
-    `;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1400);
-  }
-}
-
-// ── INIT ───────────────────────────────────────────────────────────────────
-window.onload = () => {
-  if (load() && state.users.length > 0) {
+    localStorage.setItem('currentUser', uid);
     initHome();
     showScreen('home');
     document.getElementById('bottomNav').style.display = 'flex';
+    showToast(`Bienvenue ${name} ! 🍺`);
+  };
+
+  // ── SWITCH USER ────────────────────────────────────────────────────────────
+  window.switchUser = () => {
+    const names = Object.values(allUsers).map(u => u.name).join(', ');
+    showToast('Recharge la page pour changer de compte');
+    localStorage.removeItem('currentUser');
+  };
+
+  // ── HOME INIT ──────────────────────────────────────────────────────────────
+  function initHome() {
+    // Header
+    const ha = document.getElementById('headerAvatar');
+    document.getElementById('headerName').textContent = currentUser.name;
+    if (currentUser.avatar) {
+      ha.innerHTML = `<img src="${currentUser.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
+    } else {
+      ha.textContent = currentUser.name[0].toUpperCase();
+    }
+    startListeners();
   }
-};
+
+  // ── REALTIME LISTENERS ─────────────────────────────────────────────────────
+  function startListeners() {
+    // Listen global total doc
+    onSnapshot(doc(db, 'meta', 'global'), snap => {
+      if (snap.exists()) {
+        globalTotal = snap.data().total || 0;
+        updateCounter(globalTotal);
+      }
+    });
+
+    // Listen users
+    onSnapshot(collection(db, 'users'), snap => {
+      snap.forEach(d => { allUsers[d.id] = { uid: d.id, ...d.data() }; });
+    });
+
+    // Listen logs (last 30)
+    const q = query(collection(db, 'logs'), orderBy('ts', 'desc'), limit(30));
+    onSnapshot(q, snap => {
+      logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderLogs();
+      document.getElementById('syncDot').className = 'sync-dot';
+    });
+  }
+
+  function updateCounter(t) {
+    const pct = Math.min((t / 10000) * 100, 100);
+    document.getElementById('totalCount').textContent = t.toLocaleString('fr');
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct.toFixed(2) + '%';
+  }
+
+  function renderLogs() {
+    const list = document.getElementById('logList');
+    if (logs.length === 0) {
+      list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>';
+      return;
+    }
+    list.innerHTML = logs.map(log => {
+      const u = allUsers[log.uid] || { name: log.userName, avatar: null };
+      const av = avatarHtml(u, 40, 'log-av');
+      const date = new Date(log.ts);
+      const timeStr = date.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' · ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      return `
+        <div class="log-item">
+          ${av}
+          <div class="log-info">
+            <div class="log-name">${u.name}</div>
+            <div class="log-detail">${log.lieu || 'Lieu non précisé'} · ${timeStr}</div>
+          </div>
+          <div class="log-num">#${log.num}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── ADD BEER ───────────────────────────────────────────────────────────────
+  window.openAdd = () => {
+    const btn = document.getElementById('beerBtn');
+    btn.classList.add('beer-anim');
+    setTimeout(() => btn.classList.remove('beer-anim'), 400);
+    selectedPerson = currentUser.uid;
+    document.getElementById('lieuInput').value = '';
+    renderPersonsGrid();
+    document.getElementById('screen-add').classList.add('active');
+  };
+
+  window.closeAdd = (e) => {
+    if (e.target === document.getElementById('screen-add'))
+      document.getElementById('screen-add').classList.remove('active');
+  };
+
+  window.selectPerson = (uid) => {
+    selectedPerson = uid;
+    renderPersonsGrid();
+  };
+
+  function renderPersonsGrid() {
+    const grid = document.getElementById('personsGrid');
+    grid.innerHTML = Object.values(allUsers).map(u => {
+      const sel = u.uid === selectedPerson;
+      const av = u.avatar
+        ? `<div class="pc-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
+        : `<div class="pc-av">${u.name[0].toUpperCase()}</div>`;
+      return `<div class="person-card ${sel?'selected':''}" onclick="selectPerson('${u.uid}')">
+        ${av}
+        <div class="pc-name">${u.name}</div>
+      </div>`;
+    }).join('');
+  }
+
+  window.addBeer = async () => {
+    if (!selectedPerson) { showToast('Sélectionne quelqu\'un !'); return;  }
+    const lieu = document.getElementById('lieuInput').value.trim();
+    const u = allUsers[selectedPerson];
+
+    // Increment global total atomically
+    const metaRef = doc(db, 'meta', 'global');
+    const metaSnap = await getDoc(metaRef);
+    let newTotal = 1;
+    if (metaSnap.exists()) {
+      await updateDoc(metaRef, { total: increment(1) });
+      newTotal = (metaSnap.data().total || 0) + 1;
+    } else {
+      await setDoc(metaRef, { total: 1 });
+    }
+
+    // Add log
+    await addDoc(collection(db, 'logs'), {
+      uid: selectedPerson,
+      userName: u?.name || '',
+      lieu,
+      ts: Date.now(),
+      num: newTotal,
+    });
+
+    // Increment user count
+    await updateDoc(doc(db, 'users', selectedPerson), { count: increment(1) });
+
+    document.getElementById('screen-add').classList.remove('active');
+    spawnConfetti();
+    showToast(`🍺 +1 pour ${u?.name} ! Total : ${newTotal.toLocaleString('fr')}`);
+    if (newTotal % 100 === 0) setTimeout(() => showToast(`🎉 ${newTotal} BIÈRES ! ON AVANCE !`), 1500);
+  };
+
+  // ── STATS ──────────────────────────────────────────────────────────────────
+  function renderStats() {
+    const t = globalTotal;
+    const pct = Math.min((t/10000)*100,100);
+    document.getElementById('statsTotal').textContent = t.toLocaleString('fr');
+    document.getElementById('statsProgress').style.width = pct+'%';
+    document.getElementById('statsPct').textContent = pct.toFixed(2)+'% de la mission accomplie';
+
+    const sorted = Object.values(allUsers).sort((a,b)=>(b.count||0)-(a.count||0));
+    const max = sorted[0]?.count || 1;
+    document.getElementById('barChart').innerHTML = sorted.map(u => {
+      const p = ((u.count||0)/max)*100;
+      const av = u.avatar
+        ? `<div class="bar-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
+        : `<div class="bar-av">${u.name[0].toUpperCase()}</div>`;
+      return `<div class="bar-row">
+        ${av}
+        <div class="bar-wrap">
+          <div class="bar-name">${u.name} <span style="color:var(--gold);font-size:11px;">${u.count||0} 🍺</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div>
+        </div>
+        <div class="bar-val">${u.count||0}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── INIT ───────────────────────────────────────────────────────────────────
+  async function init() {
+    // Check if already logged in
+    const savedUid = localStorage.getItem('currentUser');
+    if (savedUid) {
+      const snap = await getDoc(doc(db, 'users', savedUid));
+      if (snap.exists()) {
+        currentUser = { uid: savedUid, ...snap.data() };
+        initHome();
+        showScreen('home');
+        document.getElementById('bottomNav').style.display = 'flex';
+        return;
+      }
+    }
+    showScreen('onboard');
+  }
+
+  // Lance après 1s (pour voir le loading screen)
+  setTimeout(init, 1000);
 </script>
 </body>
 </html>
