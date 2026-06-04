@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Import Bières 🍺</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--gd:#0a3d00;--g:#1a5c00;--gold:#c8a415;--goldf:#f0c830;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--gd);color:#fff;min-height:100vh;padding:24px;}
+    h1{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--goldf);letter-spacing:3px;margin-bottom:8px;}
+    .sub{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:32px;}
+    .card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;margin-bottom:20px;}
+    .card-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:12px;}
+    textarea{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:14px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;height:200px;resize:vertical;outline:none;}
+    textarea:focus{border-color:var(--gold);}
+    .btn{padding:14px 24px;background:linear-gradient(135deg,var(--gold),var(--goldf));color:var(--gd);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;border:none;border-radius:12px;cursor:pointer;margin-top:12px;width:100%;}
+    .btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .btn-red{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;}
+    .preview-list{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;margin-top:12px;}
+    .preview-item{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:center;font-size:13px;}
+    .preview-item .num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--goldf);min-width:40px;}
+    .preview-item .info{flex:1;}
+    .preview-item .name{font-weight:700;}
+    .preview-item .detail{color:rgba(255,255,255,0.5);font-size:11px;margin-top:2px;}
+    .preview-item .ign{color:#e74c3c;font-size:11px;}
+    .stats-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
+    .stat{background:rgba(200,164,21,0.15);border:1px solid rgba(200,164,21,0.3);border-radius:12px;padding:12px 16px;text-align:center;flex:1;min-width:100px;}
+    .stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--goldf);}
+    .stat-lbl{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
+    .progress-bar{background:rgba(255,255,255,0.1);border-radius:100px;height:16px;overflow:hidden;margin:12px 0;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--goldf));border-radius:100px;transition:width 0.3s;width:0%;}
+    .progress-text{font-size:13px;color:var(--gold);font-weight:700;text-align:center;}
+    .log-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:12px;font-size:12px;font-family:monospace;max-height:200px;overflow-y:auto;margin-top:12px;line-height:1.6;}
+    .log-ok{color:#4caf00;}
+    .log-err{color:#ff6b6b;}
+    .log-skip{color:rgba(255,255,255,0.4);}
+    .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;margin-left:6px;}
+    .badge-ok{background:rgba(76,175,0,0.2);color:#4caf00;}
+    .badge-skip{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);}
+    .badge-err{background:rgba(255,107,107,0.2);color:#ff6b6b;}
+    .name-map{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+    .name-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 14px;}
+    .name-from{font-weight:700;font-size:13px;min-width:140px;}
+    .arrow{color:var(--gold);font-size:18px;}
+    select{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;outline:none;flex:1;}
+    select:focus{border-color:var(--gold);}
+    .warning{background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.3);border-radius:12px;padding:12px 16px;font-size:13px;color:rgba(255,200,0,0.9);margin-top:12px;}
+  </style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0a3d00;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;text-align:center;padding:24px;">
+  <div style="font-family:Bebas Neue,sans-serif;font-size:60px;color:#f0c830;margin-bottom:8px;">🍺</div>
+  <div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:#f0c830;letter-spacing:3px;margin-bottom:24px;">ACCÈS RESTREINT</div>
+  <input id="pwdInput" type="password" placeholder="Code secret..." style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);border-radius:16px;padding:16px 20px;color:#fff;font-size:18px;text-align:center;outline:none;width:100%;max-width:280px;margin-bottom:16px;font-family:Inter,sans-serif;" onkeydown="if(event.key==='Enter')checkPwd()">
+  <button onclick="checkPwd()" style="width:100%;max-width:280px;padding:16px;background:linear-gradient(135deg,#c8a415,#f0c830);color:#0a3d00;font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;">ENTRER</button>
+  <div id="pwdError" style="color:#ff6b6b;font-size:13px;margin-top:12px;display:none;">Code incorrect !</div>
+</div>
+
+<h1>🍺 IMPORT WHATSAPP</h1>
+<p class="sub">Colle le contenu de ta conversation WhatsApp exportée pour importer l'historique des bières.</p>
+
+<!-- ÉTAPE 1 : Coller le texte -->
+<div class="card">
+  <div class="card-title">Étape 1 — Colle le texte WhatsApp</div>
+  <textarea id="waText" placeholder="Colle ici le contenu exporté de WhatsApp...&#10;&#10;Exemple :&#10;[23/05/2026 15:10:28] fred: 9, chez Nono &lt;pièce jointe : ...&gt;&#10;[23/05/2026 15:13:13] ~ Maxime Decroux: 10 chez pongo &lt;pièce jointe : ...&gt;"></textarea>
+  <button class="btn" onclick="parseWA()">🔍 ANALYSER</button>
+</div>
+
+<!-- ÉTAPE 2 : Associer les prénoms -->
+<div class="card" id="card-names" style="display:none">
+  <div class="card-title">Étape 2 — Associer les prénoms</div>
+  <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px;">Associe chaque prénom WhatsApp à un profil dans l'app (ou crée-en un nouveau).</p>
+  <div class="name-map" id="nameMap"></div>
+  <button class="btn" onclick="buildPreview()" style="margin-top:16px;">👀 PRÉVISUALISER L'IMPORT</button>
+</div>
+
+<!-- ÉTAPE 3 : Prévisualisation -->
+<div class="card" id="card-preview" style="display:none">
+  <div class="card-title">Étape 3 — Prévisualisation</div>
+  <div class="stats-row" id="previewStats"></div>
+  <div class="preview-list" id="previewList"></div>
+  <div class="warning" id="warningBox" style="display:none"></div>
+  <button class="btn" onclick="startImport()" id="btnImport" style="margin-top:16px;">🚀 LANCER L'IMPORT</button>
+</div>
+
+<!-- ÉTAPE 4 : Import en cours -->
+<div class="card" id="card-import" style="display:none">
+  <div class="card-title">Import en cours... 🍺</div>
+  <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+  <div class="progress-text" id="progText">0 / 0</div>
+  <div class="log-box" id="logBox"></div>
+</div>
+
+<!-- ÉTAPE 5 : Terminé -->
+<div class="card" id="card-done" style="display:none">
+  <div class="card-title" style="color:#4caf00;">✅ IMPORT TERMINÉ !</div>
+  <div class="stats-row" id="doneStats"></div>
+  <p style="font-size:14px;color:rgba(255,255,255,0.7);margin-top:16px;">Tu peux maintenant retourner sur l'app principale. Le compteur et le fil sont à jour !</p>
+  <a href="/" style="display:block;margin-top:16px;"><button class="btn">🍺 RETOUR À L'APP</button></a>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, getDoc, setDoc, updateDoc, increment, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const fb = initializeApp({
+  apiKey:"AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
+  authDomain:"bieres-1458b.firebaseapp.com",
+  projectId:"bieres-1458b",
+  storageBucket:"bieres-1458b.firebasestorage.app",
+  messagingSenderId:"473243479365",
+  appId:"1:473243479365:web:059399eef3abb580f8e22c"
+});
+const db = getFirestore(fb);
+
+let parsed = []; // { waName, num, lieu, date }
+let waNames = []; // noms uniques WhatsApp
+let nameMapping = {}; // waName -> { uid, displayName }
+let toImport = []; // entrées validées prêtes à importer
+
+const $ = id => document.getElementById(id);
+
+// PASSWORD
+window.checkPwd = () => {
+  const pwd = document.getElementById("pwdInput").value;
+  if (pwd === "10000bieres") {
+    document.getElementById("gate").style.display = "none";
+  } else {
+    document.getElementById("pwdError").style.display = "block";
+    document.getElementById("pwdInput").value = "";
+    document.getElementById("pwdInput").focus();
+  }
+};
+
+// ── PARSE WHATSAPP ─────────────────────────────────────────────────────────
+window.parseWA = () => {
+  const text = $('waText').value.trim();
+  if (!text) { alert('Colle le texte WhatsApp !'); return; }
+
+  parsed = [];
+  const lines = text.split('\n');
+
+  // Regex pour le format [DD/MM/YYYY HH:MM:SS] Prénom: message
+  const lineRe = /^\[(\d{2}\/\d{2}\/\d{4})\s(\d{2}:\d{2}:\d{2})\]\s~?\s*([^:]+):\s*(.+)$/;
+  // Regex pour détecter un numéro de bière en début de message
+  const beerRe = /^(\d+)\s*[,\-\/]?\s*(.*)$/;
+
+  for (const line of lines) {
+    const lm = line.match(lineRe);
+    if (!lm) continue;
+
+    const [, date, time, rawName, content] = lm;
+    const name = rawName.trim().replace(/^~/,'').trim();
+
+    // Ignore system messages
+    if (content.includes('a créé ce groupe') || content.includes('a ajouté') ||
+        content.includes('a changé') || content.includes('supprimé') ||
+        content.includes('chiffrés') || content.includes('Ce message')) continue;
+
+    // Extract beer number from content
+    // Remove <pièce jointe: ...> part
+    const cleanContent = content.replace(/<[^>]+>/g,'').trim();
+
+    const bm = cleanContent.match(beerRe);
+    if (!bm) continue;
+
+    const num = parseInt(bm[1]);
+    if (isNaN(num) || num < 1 || num > 15000) continue;
+
+    // lieu = everything after the number
+    let lieu = bm[2].trim();
+    // Clean up common patterns
+    lieu = lieu.replace(/^[,\-\/\*]\s*/,'').trim();
+    if (!lieu) lieu = 'Lieu non précisé';
+
+    // Parse date
+    const [day, month, year] = date.split('/');
+    const [h, m, s] = time.split(':');
+    const ts = new Date(year, month-1, day, h, m, s).getTime();
+
+    parsed.push({ waName: name, num, lieu, ts, raw: line });
+  }
+
+  if (!parsed.length) {
+    alert('Aucune bière détectée ! Vérifie le format du texte.');
+    return;
+  }
+
+  // Sort by num
+  parsed.sort((a,b) => a.num - b.num);
+
+  // Get unique names
+  waNames = [...new Set(parsed.map(p => p.waName))].sort();
+
+  // Build name mapping UI
+  buildNameMap();
+  $('card-names').style.display = 'block';
+  $('card-names').scrollIntoView({behavior:'smooth'});
+};
+
+function buildNameMap() {
+  const map = $('nameMap');
+  map.innerHTML = waNames.map(name => {
+    const uid = name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+    const count = parsed.filter(p => p.waName === name).length;
+    return `
+      <div class="name-row">
+        <div class="name-from">${name} <span style="color:var(--gold);font-size:11px;">(${count} 🍺)</span></div>
+        <div class="arrow">→</div>
+        <input type="text" id="map_${uid}" value="${name}" placeholder="Prénom dans l'app" style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;outline:none;flex:1;">
+      </div>
+    `;
+  }).join('');
+}
+
+// ── BUILD PREVIEW ──────────────────────────────────────────────────────────
+window.buildPreview = () => {
+  // Build name mapping from inputs
+  nameMapping = {};
+  waNames.forEach(name => {
+    const uid = name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+    const input = document.getElementById('map_'+uid);
+    const displayName = input ? input.value.trim() || name : name;
+    const mappedUid = displayName.toLowerCase().replace(/[^a-z0-9]/g,'_');
+    nameMapping[name] = { uid: mappedUid, displayName };
+  });
+
+  // Build toImport list
+  toImport = parsed.map(p => ({
+    ...p,
+    uid: nameMapping[p.waName].uid,
+    displayName: nameMapping[p.waName].displayName,
+  }));
+
+  // Stats
+  const byPerson = {};
+  toImport.forEach(e => { byPerson[e.displayName] = (byPerson[e.displayName]||0)+1; });
+  const maxNum = Math.max(...toImport.map(e=>e.num));
+  const minNum = Math.min(...toImport.map(e=>e.num));
+
+  $('previewStats').innerHTML = `
+    <div class="stat"><div class="stat-val">${toImport.length}</div><div class="stat-lbl">bières à importer</div></div>
+    <div class="stat"><div class="stat-val">${Object.keys(byPerson).length}</div><div class="stat-lbl">personnes</div></div>
+    <div class="stat"><div class="stat-val">#${minNum}→#${maxNum}</div><div class="stat-lbl">numéros</div></div>
+  `;
+
+  // Preview list (first 50)
+  const shown = toImport.slice(0,100);
+  $('previewList').innerHTML = shown.map(e => {
+    const d = new Date(e.ts);
+    const dateStr = d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="preview-item">
+      <div class="num">#${e.num}</div>
+      <div class="info">
+        <div class="name">${e.displayName}</div>
+        <div class="detail">📍 ${e.lieu} · 📅 ${dateStr}</div>
+      </div>
+    </div>`;
+  }).join('') + (toImport.length > 100 ? `<div style="text-align:center;color:rgba(255,255,255,0.4);padding:12px;font-size:12px;">... et ${toImport.length-100} autres</div>` : '');
+
+  // Warning if duplicates in nums
+  const nums = toImport.map(e=>e.num);
+  const dupes = nums.filter((n,i)=>nums.indexOf(n)!==i);
+  if (dupes.length) {
+    $('warningBox').style.display='block';
+    $('warningBox').textContent = `⚠️ Numéros dupliqués détectés : ${[...new Set(dupes)].join(', ')}. Ils seront quand même importés.`;
+  }
+
+  $('card-preview').style.display='block';
+  $('card-preview').scrollIntoView({behavior:'smooth'});
+};
+
+// ── IMPORT ─────────────────────────────────────────────────────────────────
+window.startImport = async () => {
+  if (!toImport.length) return;
+  if (!confirm(`Importer ${toImport.length} bières dans Firebase ?`)) return;
+
+  $('card-import').style.display='block';
+  $('card-import').scrollIntoView({behavior:'smooth'});
+  $('btnImport').disabled=true;
+
+  const logBox = $('logBox');
+  const progFill = $('progFill');
+  const progText = $('progText');
+
+  // 1. Create/update all users
+  const userCounts = {};
+  toImport.forEach(e => { userCounts[e.uid] = { name:e.displayName, count:(userCounts[e.uid]?.count||0)+1 }; });
+
+  log(logBox, `👤 Création de ${Object.keys(userCounts).length} profils...`, 'ok');
+  for (const [uid, data] of Object.entries(userCounts)) {
+    const ref = doc(db,'users',uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      await updateDoc(ref, { count: increment(data.count) });
+    } else {
+      await setDoc(ref, { name:data.name, avatar:null, count:data.count, createdAt:Date.now() });
+    }
+    log(logBox, `  ✓ ${data.name} (${data.count} bières)`, 'ok');
+  }
+
+  // 2. Import beers by batches of 500
+  const total = toImport.length;
+  let done = 0;
+  const BATCH_SIZE = 400;
+
+  for (let i = 0; i < toImport.length; i += BATCH_SIZE) {
+    const chunk = toImport.slice(i, i+BATCH_SIZE);
+    const batch = writeBatch(db);
+
+    chunk.forEach(e => {
+      const ref = doc(collection(db,'logs'));
+      batch.set(ref, {
+        uid: e.uid,
+        userName: e.displayName,
+        lieu: e.lieu,
+        photo: null, // pas de photo pour l'historique
+        lat: null, lng: null,
+        ts: e.ts,
+        num: e.num,
+        imported: true,
+      });
+    });
+
+    await batch.commit();
+    done += chunk.length;
+
+    const pct = Math.round((done/total)*100);
+    progFill.style.width = pct+'%';
+    progText.textContent = `${done} / ${total} bières importées`;
+    log(logBox, `📦 Batch ${Math.ceil((i+1)/BATCH_SIZE)} : ${Math.min(i+BATCH_SIZE,total)} bières OK`, 'ok');
+  }
+
+  // 3. Update global total
+  const metaRef = doc(db,'meta','global');
+  const ms = await getDoc(metaRef);
+  if (ms.exists()) {
+    await updateDoc(metaRef, { total: increment(toImport.length) });
+  } else {
+    await setDoc(metaRef, { total: toImport.length });
+  }
+
+  log(logBox, `✅ Compteur global mis à jour : +${toImport.length} bières`, 'ok');
+  log(logBox, `🎉 Import terminé avec succès !`, 'ok');
+
+  // Done
+  $('doneStats').innerHTML = `
+    <div class="stat"><div class="stat-val">${toImport.length}</div><div class="stat-lbl">bières importées</div></div>
+    <div class="stat"><div class="stat-val">${Object.keys(userCounts).length}</div><div class="stat-lbl">profils créés</div></div>
+  `;
+  $('card-done').style.display='block';
+  $('card-done').scrollIntoView({behavior:'smooth'});
+};
+
+function log(box, msg, type='ok') {
+  const line = document.createElement('div');
+  line.className = type==='ok'?'log-ok':type==='err'?'log-err':'log-skip';
+  line.textContent = msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+</script>
+</body>
+</html>
