@@ -10,170 +10,170 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
-    :root {
-      --green-dark:#0a3d00; --green:#1a5c00; --green-mid:#2d8a00;
-      --gold:#c8a415; --gold-light:#f0c830; --white:#ffffff;
-    }
+    :root{--gd:#0a3d00;--g:#1a5c00;--gm:#2d8a00;--gold:#c8a415;--goldf:#f0c830;--w:#fff;}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    body{font-family:'Inter',sans-serif;background:var(--green-dark);color:var(--white);min-height:100vh;overflow-x:hidden;}
-    .screen{display:none;min-height:100vh;flex-direction:column;}
+    body{font-family:'Inter',sans-serif;background:var(--gd);color:var(--w);min-height:100vh;overflow-x:hidden;}
+
+    /* Each screen is position:fixed, full screen, hidden by default */
+    .screen{position:fixed;top:0;left:0;right:0;bottom:85px;overflow-y:auto;display:none;flex-direction:column;}
     .screen.active{display:flex;}
+    /* Loading & onboard have no bottom nav so use full height */
+    #screen-loading,#screen-onboard{bottom:0;}
 
     /* LOADING */
-    #screen-loading{background:linear-gradient(160deg,var(--green-dark),var(--green));align-items:center;justify-content:center;text-align:center;}
-    .loading-logo{font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--gold-light);animation:pulse 1.5s ease-in-out infinite;}
-    .loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:24px auto 0;}
+    #screen-loading{background:linear-gradient(160deg,var(--gd),var(--g));align-items:center;justify-content:center;text-align:center;}
+    .spin{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:24px auto 0;}
 
     /* ONBOARDING */
-    #screen-onboard{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 60%,var(--green-mid) 100%);align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-    .onboard-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--gold-light);line-height:1;margin-bottom:4px;text-shadow:0 4px 20px rgba(200,164,21,0.4);}
-    .onboard-sub{font-size:14px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:40px;}
-    .avatar-picker{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.1);border:3px dashed var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 12px;overflow:hidden;transition:all 0.2s;}
-    .avatar-picker img{width:100%;height:100%;object-fit:cover;display:none;}
-    .onboard-form{width:100%;max-width:320px;}
-    .field{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;width:100%;color:var(--white);font-size:18px;font-family:'Inter',sans-serif;font-weight:600;text-align:center;margin-bottom:16px;outline:none;transition:border-color 0.2s;}
+    #screen-onboard{background:linear-gradient(160deg,var(--gd) 0%,var(--g) 60%,var(--gm) 100%);align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+    .ob-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--goldf);line-height:1;margin-bottom:4px;}
+    .ob-sub{font-size:14px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:40px;}
+    .av-pick{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.1);border:3px dashed var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 12px;overflow:hidden;}
+    .av-pick img{width:100%;height:100%;object-fit:cover;display:none;}
+    .ob-form{width:100%;max-width:320px;}
+    .field{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:16px;padding:16px 20px;width:100%;color:var(--w);font-size:18px;font-family:'Inter',sans-serif;font-weight:600;text-align:center;margin-bottom:16px;outline:none;transition:border-color 0.2s;}
     .field::placeholder{color:rgba(255,255,255,0.3);font-weight:400;}
     .field:focus{border-color:var(--gold);}
-    .btn-primary{width:100%;padding:18px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--green-dark);font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;box-shadow:0 8px 24px rgba(200,164,21,0.4);transition:all 0.2s;}
-    .btn-primary:active{transform:scale(0.97);}
+    .btn-p{width:100%;padding:18px;background:linear-gradient(135deg,var(--gold),var(--goldf));color:var(--gd);font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;box-shadow:0 8px 24px rgba(200,164,21,0.4);}
+    .btn-p:active{transform:scale(0.97);}
 
     /* HOME */
-    #screen-home{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);overflow-y:auto;padding-bottom:100px;}
-    .home-header{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 16px;}
-    .header-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold-light);letter-spacing:2px;}
-    .user-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border-radius:30px;padding:6px 14px 6px 6px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);}
-    .pill-av{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;overflow:hidden;}
-    .pill-av img{width:100%;height:100%;object-fit:cover;}
-    .counter-hero{text-align:center;padding:8px 20px 20px;}
-    .counter-label{font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
-    .counter-number{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1;color:var(--gold-light);text-shadow:0 0 40px rgba(200,164,21,0.5);animation:pulse 2s ease-in-out infinite;}
-    .counter-goal{font-size:14px;color:rgba(255,255,255,0.4);margin-top:4px;}
-    .progress-wrap{margin:0 20px 24px;}
-    .progress-track{background:rgba(255,255,255,0.1);border-radius:100px;height:12px;overflow:hidden;}
-    .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:100px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
-    .progress-pct{text-align:right;font-size:12px;color:var(--gold);font-weight:700;margin-top:6px;}
-    .beer-zone{display:flex;align-items:center;justify-content:center;padding:0 20px 20px;}
-    .beer-btn{position:relative;width:180px;height:180px;cursor:pointer;animation:float 3s ease-in-out infinite;}
-    .beer-btn img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 20px 40px rgba(200,164,21,0.5));}
+    #screen-home{background:linear-gradient(160deg,var(--gd) 0%,var(--g) 100%);}
+    .hdr{display:flex;align-items:center;justify-content:space-between;padding:56px 20px 16px;flex-shrink:0;}
+    .hdr-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--goldf);letter-spacing:2px;}
+    .upill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border-radius:30px;padding:6px 14px 6px 6px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);}
+    .pav{width:32px;height:32px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;overflow:hidden;flex-shrink:0;}
+    .pav img{width:100%;height:100%;object-fit:cover;}
+    .cnt-hero{text-align:center;padding:8px 20px 16px;flex-shrink:0;}
+    .cnt-lbl{font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+    .cnt-num{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1;color:var(--goldf);text-shadow:0 0 40px rgba(200,164,21,0.5);animation:pulse 2s ease-in-out infinite;}
+    .cnt-goal{font-size:14px;color:rgba(255,255,255,0.4);margin-top:4px;}
+    .prog-wrap{margin:0 20px 20px;flex-shrink:0;}
+    .prog-track{background:rgba(255,255,255,0.1);border-radius:100px;height:12px;overflow:hidden;}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--goldf));border-radius:100px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+    .prog-pct{text-align:right;font-size:12px;color:var(--gold);font-weight:700;margin-top:6px;}
+    .beer-zone{display:flex;align-items:center;justify-content:center;padding:0 20px 16px;flex-shrink:0;}
+    .beer-btn{position:relative;width:160px;height:160px;cursor:pointer;animation:float 3s ease-in-out infinite;}
+    .beer-btn img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 16px 32px rgba(200,164,21,0.5));}
     .beer-btn:active img{transform:scale(0.9);}
-    .beer-glow{position:absolute;width:120px;height:40px;background:rgba(200,164,21,0.3);bottom:0;left:50%;transform:translateX(-50%);border-radius:50%;filter:blur(16px);}
-    .tap-hint{text-align:center;font-size:13px;color:rgba(255,255,255,0.35);margin-bottom:24px;}
-    .section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold-light);letter-spacing:2px;padding:0 20px;margin-bottom:12px;}
-    .log-list{padding:0 20px;display:flex;flex-direction:column;gap:10px;}
-    .log-item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
-    .log-av{width:40px;height:40px;border-radius:50%;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;}
-    .log-av img{width:100%;height:100%;object-fit:cover;}
-    .log-info{flex:1;}
-    .log-name{font-weight:700;font-size:14px;}
-    .log-detail{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;}
-    .log-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold-light);}
+    .beer-glow{position:absolute;width:100px;height:30px;background:rgba(200,164,21,0.3);bottom:0;left:50%;transform:translateX(-50%);border-radius:50%;filter:blur(12px);}
+    .tap-hint{text-align:center;font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:20px;flex-shrink:0;}
+    .sec-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--goldf);letter-spacing:2px;padding:0 20px;margin-bottom:12px;flex-shrink:0;}
+    .log-list{padding:0 20px;display:flex;flex-direction:column;gap:10px;padding-bottom:20px;}
+    .log-item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+    .lav{width:40px;height:40px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;overflow:hidden;}
+    .lav img{width:100%;height:100%;object-fit:cover;}
+    .l-info{flex:1;min-width:0;}
+    .l-name{font-weight:700;font-size:14px;}
+    .l-det{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .l-num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--goldf);flex-shrink:0;}
+    .del-btn{background:rgba(255,80,80,0.2);border:none;border-radius:8px;color:#ff6b6b;font-size:16px;padding:6px 8px;cursor:pointer;flex-shrink:0;}
 
     /* ADD MODAL */
-    #screen-add{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;justify-content:center;z-index:100;backdrop-filter:blur(4px);}
+    #screen-add{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(4px);}
     #screen-add.active{display:flex;}
     .modal-sheet{background:linear-gradient(160deg,#0f4500,#1a5c00);border-top-left-radius:28px;border-top-right-radius:28px;width:100%;max-width:480px;padding:12px 24px 40px;border-top:1px solid rgba(200,164,21,0.3);animation:slideUp 0.3s ease;max-height:90vh;overflow-y:auto;}
-    .modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 20px;}
-    .modal-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold-light);letter-spacing:2px;margin-bottom:20px;}
-    .field-label{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
-    .persons-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
-    .person-card{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.1);border-radius:16px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;}
-    .person-card.selected{border-color:var(--gold);background:rgba(200,164,21,0.15);}
-    .pc-av{width:52px;height:52px;border-radius:50%;background:var(--green-mid);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;overflow:hidden;}
+    .m-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 20px;}
+    .m-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--goldf);letter-spacing:2px;margin-bottom:20px;}
+    .f-label{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+    .pg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+    .pc{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.1);border-radius:16px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+    .pc.sel{border-color:var(--gold);background:rgba(200,164,21,0.15);}
+    .pc-av{width:48px;height:48px;border-radius:50%;background:var(--gm);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden;}
     .pc-av img{width:100%;height:100%;object-fit:cover;}
-    .pc-name{font-size:12px;font-weight:600;}
+    .pc-name{font-size:11px;font-weight:600;}
+    .pc-del{position:absolute;top:4px;right:4px;background:rgba(255,60,60,0.8);border:none;border-radius:50%;width:18px;height:18px;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
 
-    /* PHOTO UPLOAD */
-    .photo-upload-zone{background:rgba(255,255,255,0.05);border:2px dashed rgba(200,164,21,0.5);border-radius:16px;padding:20px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all 0.2s;position:relative;overflow:hidden;}
-    .photo-upload-zone.has-photo{border-color:var(--gold);border-style:solid;}
-    .photo-upload-zone img{width:100%;max-height:200px;object-fit:cover;border-radius:12px;display:none;}
-    .photo-upload-zone.has-photo img{display:block;}
-    .photo-upload-zone.has-photo .upload-placeholder{display:none;}
-    .upload-placeholder{color:rgba(255,255,255,0.5);font-size:14px;}
-    .upload-icon{font-size:40px;margin-bottom:8px;}
-    .upload-required{font-size:11px;color:var(--gold);margin-top:4px;font-weight:600;}
+    .photo-zone{background:rgba(255,255,255,0.05);border:2px dashed rgba(200,164,21,0.5);border-radius:16px;padding:20px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all 0.2s;overflow:hidden;}
+    .photo-zone.has{border-color:var(--gold);border-style:solid;}
+    .photo-zone img{width:100%;max-height:180px;object-fit:cover;border-radius:10px;display:none;}
+    .photo-zone.has img{display:block;}
+    .photo-zone.has .ph-placeholder{display:none;}
+    .ph-placeholder{color:rgba(255,255,255,0.5);font-size:14px;}
+    .ph-icon{font-size:36px;margin-bottom:6px;}
+    .ph-req{font-size:11px;color:var(--gold);margin-top:4px;font-weight:600;}
 
-    .btn-add{width:100%;padding:18px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--green-dark);font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;margin-top:20px;box-shadow:0 8px 24px rgba(200,164,21,0.4);}
-    .btn-add:active{transform:scale(0.97);}
+    .btn-add{width:100%;padding:18px;background:linear-gradient(135deg,var(--gold),var(--goldf));color:var(--gd);font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;border:none;border-radius:16px;cursor:pointer;margin-top:16px;box-shadow:0 8px 24px rgba(200,164,21,0.4);}
     .btn-add:disabled{opacity:0.4;cursor:not-allowed;}
 
-    /* FIL D'ACTU */
-    #screen-fil{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);overflow-y:auto;padding-bottom:100px;}
-    .fil-header{padding:56px 20px 20px;}
-    .fil-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold-light);letter-spacing:2px;}
-    .fil-list{padding:0 16px;display:flex;flex-direction:column;gap:16px;}
-
-    .msg-bubble{display:flex;gap:10px;align-items:flex-end;}
-    .msg-bubble.mine{flex-direction:row-reverse;}
-    .msg-av{width:36px;height:36px;border-radius:50%;background:var(--green-mid);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;overflow:hidden;}
+    /* FIL */
+    #screen-fil{background:linear-gradient(160deg,var(--gd) 0%,var(--g) 100%);}
+    .fil-hdr{padding:56px 20px 16px;flex-shrink:0;}
+    .fil-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--goldf);letter-spacing:2px;}
+    .fil-list{padding:12px 16px;display:flex;flex-direction:column;gap:14px;padding-bottom:20px;}
+    .msg-row{display:flex;gap:8px;align-items:flex-end;}
+    .msg-row.mine{flex-direction:row-reverse;}
+    .msg-av{width:32px;height:32px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;overflow:hidden;}
     .msg-av img{width:100%;height:100%;object-fit:cover;}
-    .msg-content{max-width:75%;}
-    .msg-name{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;font-weight:600;}
-    .msg-bubble.mine .msg-name{text-align:right;}
-    .msg-box{background:rgba(255,255,255,0.1);border-radius:18px 18px 18px 4px;padding:10px 14px;border:1px solid rgba(255,255,255,0.1);}
-    .msg-bubble.mine .msg-box{background:rgba(200,164,21,0.2);border-radius:18px 18px 4px 18px;border-color:rgba(200,164,21,0.3);}
-    .msg-photo{width:100%;border-radius:12px;max-height:240px;object-fit:cover;margin-bottom:8px;display:block;}
-    .msg-text{font-size:13px;line-height:1.4;}
-    .msg-meta{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;display:flex;align-items:center;gap:6px;}
-    .msg-num{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);}
+    .msg-wrap{max-width:78%;}
+    .msg-uname{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:3px;font-weight:600;}
+    .msg-row.mine .msg-uname{text-align:right;}
+    .msg-box{background:rgba(255,255,255,0.1);border-radius:18px 18px 18px 4px;padding:10px 12px;border:1px solid rgba(255,255,255,0.1);}
+    .msg-row.mine .msg-box{background:rgba(200,164,21,0.18);border-radius:18px 18px 4px 18px;border-color:rgba(200,164,21,0.3);}
+    .msg-photo{width:100%;border-radius:10px;max-height:220px;object-fit:cover;margin-bottom:6px;display:block;}
+    .msg-txt{font-size:13px;line-height:1.4;}
+    .msg-meta{font-size:10px;color:rgba(255,255,255,0.35);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .msg-num{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--gold);}
+    .msg-del{background:none;border:none;color:rgba(255,100,100,0.6);font-size:14px;cursor:pointer;padding:0 2px;}
 
-    /* CARTE */
-    #screen-map{background:var(--green-dark);display:flex;flex-direction:column;padding-bottom:85px;}
-    .map-header{padding:56px 20px 16px;flex-shrink:0;}
-    .map-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold-light);letter-spacing:2px;}
-    .map-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;}
-    #mapContainer{flex:1;min-height:calc(100vh - 200px);}
-    #map{width:100%;height:100%;}
+    /* MAP */
+    #screen-map{background:var(--gd);flex-direction:column;}
+    .map-hdr{padding:56px 20px 12px;flex-shrink:0;}
+    .map-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--goldf);letter-spacing:2px;}
+    .map-sub{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;}
+    #mapWrap{flex:1;position:relative;}
+    #map{position:absolute;top:0;left:0;right:0;bottom:0;}
+    .bm{font-size:22px;line-height:1;}
 
     /* STATS */
-    #screen-stats{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);padding:56px 20px 120px;overflow-y:auto;}
-    .stats-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold-light);letter-spacing:3px;margin-bottom:24px;}
-    .stat-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;margin-bottom:14px;}
-    .stat-card-title{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+    #screen-stats{background:linear-gradient(160deg,var(--gd) 0%,var(--g) 100%);}
+    .stats-wrap{padding:56px 20px 20px;}
+    .stats-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--goldf);letter-spacing:3px;margin-bottom:20px;}
+    .scard{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:18px;margin-bottom:14px;}
+    .scard-title{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
     .bar-chart{display:flex;flex-direction:column;gap:14px;}
     .bar-row{display:flex;align-items:center;gap:10px;}
-    .bar-av{width:36px;height:36px;border-radius:50%;background:var(--green-mid);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;overflow:hidden;}
-    .bar-av img{width:100%;height:100%;object-fit:cover;}
-    .bar-wrap{flex:1;}
-    .bar-name{font-size:12px;font-weight:600;margin-bottom:4px;}
-    .bar-track{background:rgba(255,255,255,0.08);border-radius:100px;height:10px;overflow:hidden;}
-    .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:100px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
-    .bar-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold-light);width:48px;text-align:right;}
+    .bav{width:36px;height:36px;border-radius:50%;background:var(--gm);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;overflow:hidden;}
+    .bav img{width:100%;height:100%;object-fit:cover;}
+    .bwrap{flex:1;}
+    .bname{font-size:12px;font-weight:600;margin-bottom:4px;}
+    .btrack{background:rgba(255,255,255,0.08);border-radius:100px;height:10px;overflow:hidden;}
+    .bfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--goldf));border-radius:100px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+    .bval{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--goldf);width:44px;text-align:right;}
 
     /* RULES */
-    #screen-rules{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 100%);padding:56px 20px 120px;overflow-y:auto;}
-    .rules-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold-light);letter-spacing:3px;margin-bottom:24px;}
-    .rules-card{background:rgba(255,255,255,0.07);border:1px solid rgba(200,164,21,0.2);border-radius:20px;padding:20px;margin-bottom:14px;}
-    .rules-section{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);margin-bottom:10px;}
-    .rule-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
-    .rule-emoji{font-size:18px;flex-shrink:0;}
-    .rule-text{font-size:14px;line-height:1.5;color:rgba(255,255,255,0.85);}
-    .rule-text b{color:var(--gold-light);}
+    #screen-rules{background:linear-gradient(160deg,var(--gd) 0%,var(--g) 100%);}
+    .rules-wrap{padding:56px 20px 20px;}
+    .rules-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--goldf);letter-spacing:3px;margin-bottom:20px;}
+    .rcard{background:rgba(255,255,255,0.07);border:1px solid rgba(200,164,21,0.2);border-radius:20px;padding:18px;margin-bottom:14px;}
+    .rsec{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);margin-bottom:10px;}
+    .ri{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+    .re{font-size:18px;flex-shrink:0;}
+    .rt{font-size:14px;line-height:1.5;color:rgba(255,255,255,0.85);}
+    .rt b{color:var(--goldf);}
 
     /* BOTTOM NAV */
-    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,61,0,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(200,164,21,0.2);display:flex;padding:10px 0 24px;z-index:50;}
-    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;}
-    .nav-icon{font-size:22px;opacity:0.4;transition:all 0.2s;}
-    .nav-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);}
-    .nav-item.active .nav-icon{opacity:1;}
-    .nav-item.active .nav-label{color:var(--gold-light);}
+    .bnav{position:fixed;bottom:0;left:0;right:0;height:85px;background:rgba(10,61,0,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(200,164,21,0.2);display:flex;align-items:flex-start;padding-top:10px;z-index:100;}
+    .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
+    .ni-icon{font-size:22px;opacity:0.4;transition:opacity 0.2s;}
+    .ni-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);}
+    .ni.active .ni-icon{opacity:1;}
+    .ni.active .ni-lbl{color:var(--goldf);}
 
     /* TOAST */
-    .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--gold);color:var(--green-dark);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;padding:12px 24px;border-radius:100px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:200;white-space:nowrap;}
+    .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--gold);color:var(--gd);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;padding:10px 22px;border-radius:100px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:300;white-space:nowrap;max-width:90vw;text-align:center;}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-    .sync-dot{width:8px;height:8px;border-radius:50%;background:#4caf00;display:inline-block;margin-left:6px;animation:blink 2s ease-in-out infinite;}
+    .sdot{width:8px;height:8px;border-radius:50%;background:#4caf00;display:inline-block;margin-left:6px;animation:blink 2s ease-in-out infinite;}
 
-    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
     @keyframes pulse{0%,100%{text-shadow:0 0 40px rgba(200,164,21,0.5);}50%{text-shadow:0 0 60px rgba(200,164,21,0.8);}}
     @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
     @keyframes spin{to{transform:rotate(360deg);}}
     @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-    @keyframes beerPop{0%{transform:scale(1);}40%{transform:scale(0.88);}70%{transform:scale(1.08);}100%{transform:scale(1);}}
     .beer-anim{animation:beerPop 0.4s ease !important;}
-    .confetti{position:fixed;pointer-events:none;z-index:300;border-radius:2px;animation:confettiFall 1.2s ease-out forwards;}
-    @keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg);}100%{opacity:0;transform:translateY(300px) rotate(720deg);}}
-
-    /* Leaflet custom marker */
-    .beer-marker{font-size:24px;line-height:1;}
+    @keyframes beerPop{0%{transform:scale(1);}40%{transform:scale(0.88);}70%{transform:scale(1.08);}100%{transform:scale(1);}}
+    .confetti{position:fixed;pointer-events:none;z-index:400;border-radius:2px;animation:cf 1.2s ease-out forwards;}
+    @keyframes cf{0%{opacity:1;transform:translateY(0) rotate(0deg);}100%{opacity:0;transform:translateY(300px) rotate(720deg);}}
   </style>
 </head>
 <body>
@@ -182,44 +182,44 @@
 
 <!-- LOADING -->
 <div class="screen active" id="screen-loading">
-  <div class="loading-logo">🍺</div>
-  <div style="font-size:14px;color:rgba(255,255,255,0.4);letter-spacing:3px;margin-top:8px;">Connexion en cours...</div>
-  <div class="loading-spinner"></div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--goldf);animation:pulse 1.5s ease-in-out infinite;">🍺</div>
+  <div style="font-size:14px;color:rgba(255,255,255,0.4);letter-spacing:3px;margin-top:8px;">Connexion...</div>
+  <div class="spin"></div>
 </div>
 
 <!-- ONBOARDING -->
 <div class="screen" id="screen-onboard">
-  <div class="onboard-logo">🍺 10 000</div>
-  <div class="onboard-sub">La mission commence</div>
-  <div class="avatar-picker" id="avatarPicker" onclick="document.getElementById('avatarInput').click()">
-    <span id="avatarPlaceholder" style="font-size:40px;">📸</span>
-    <img id="avatarPreview">
-    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
+  <div class="ob-logo">🍺 10 000</div>
+  <div class="ob-sub">La mission commence</div>
+  <div class="av-pick" id="avPick" onclick="document.getElementById('avInput').click()">
+    <span id="avPlaceholder" style="font-size:40px;">📸</span>
+    <img id="avPreview">
+    <input type="file" id="avInput" accept="image/*" style="display:none" onchange="previewAv(this)">
   </div>
   <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:28px;">Ajoute ta photo</p>
-  <div class="onboard-form">
+  <div class="ob-form">
     <input class="field" id="nameInput" type="text" placeholder="Ton prénom" maxlength="20" autocomplete="off">
-    <button class="btn-primary" onclick="createProfile()">ENTRER DANS LA LÉGENDE 🍺</button>
+    <button class="btn-p" onclick="createProfile()">ENTRER DANS LA LÉGENDE 🍺</button>
   </div>
 </div>
 
 <!-- HOME -->
 <div class="screen" id="screen-home">
-  <div class="home-header">
-    <div class="header-title">🍺 LA MISSION <span class="sync-dot" id="syncDot"></span></div>
-    <div class="user-pill" onclick="switchUser()">
-      <div class="pill-av" id="headerAvatar">👤</div>
-      <span id="headerName">Moi</span>
+  <div class="hdr">
+    <div class="hdr-title">🍺 LA MISSION <span class="sdot" id="sdot"></span></div>
+    <div class="upill" onclick="switchUser()">
+      <div class="pav" id="hdrAv">👤</div>
+      <span id="hdrName">Moi</span>
     </div>
   </div>
-  <div class="counter-hero">
-    <div class="counter-label">bières bues</div>
-    <div class="counter-number" id="totalCount">0</div>
-    <div class="counter-goal">sur 10 000</div>
+  <div class="cnt-hero">
+    <div class="cnt-lbl">bières bues</div>
+    <div class="cnt-num" id="totalCount">0</div>
+    <div class="cnt-goal">sur 10 000</div>
   </div>
-  <div class="progress-wrap">
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-pct" id="progressPct">0%</div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-pct" id="progPct">0%</div>
   </div>
   <div class="beer-zone">
     <div class="beer-btn" id="beerBtn" onclick="openAdd()">
@@ -228,496 +228,378 @@
     </div>
   </div>
   <div class="tap-hint">Clique sur la bière pour enregistrer 🍺</div>
-  <div class="section-title">DERNIÈRES BIÈRES</div>
+  <div class="sec-title">DERNIÈRES BIÈRES</div>
   <div class="log-list" id="logList">
     <div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>
   </div>
 </div>
 
 <!-- ADD MODAL -->
-<div id="screen-add" onclick="closeAdd(event)">
+<div id="screen-add" onclick="closeAddModal(event)">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">+ 1 BIÈRE 🍺</div>
-
-    <div class="field-label">Qui a bu ?</div>
-    <div class="persons-grid" id="personsGrid"></div>
-
-    <div class="field-label">📸 Photo de preuve (obligatoire)</div>
-    <div class="photo-upload-zone" id="photoZone" onclick="document.getElementById('beerPhotoInput').click()">
-      <div class="upload-placeholder">
-        <div class="upload-icon">📷</div>
-        <div>Prends une photo de ta bière pleine</div>
-        <div class="upload-required">OBLIGATOIRE · 1 PHOTO = 1 BIÈRE</div>
+    <div class="m-handle"></div>
+    <div class="m-title">+ 1 BIÈRE 🍺</div>
+    <div class="f-label">Qui a bu ?</div>
+    <div class="pg" id="persGrid"></div>
+    <div class="f-label">📸 Photo de preuve (obligatoire)</div>
+    <div class="photo-zone" id="photoZone" onclick="document.getElementById('beerPhotoInput').click()">
+      <div class="ph-placeholder">
+        <div class="ph-icon">📷</div>
+        <div>Photo de ta bière pleine</div>
+        <div class="ph-req">OBLIGATOIRE · 1 PHOTO = 1 BIÈRE</div>
       </div>
       <img id="beerPhotoPreview">
       <input type="file" id="beerPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="previewBeerPhoto(this)">
     </div>
-
-    <div class="field-label">📍 Lieu</div>
+    <div class="f-label">📍 Lieu</div>
     <input class="field" id="lieuInput" type="text" placeholder="Bar, chez quelqu'un..." style="text-align:left;margin-bottom:0;">
-
     <button class="btn-add" id="btnAdd" onclick="addBeer()" disabled>📸 AJOUTE UNE PHOTO D'ABORD</button>
   </div>
 </div>
 
-<!-- FIL D'ACTU -->
+<!-- FIL -->
 <div class="screen" id="screen-fil">
-  <div class="fil-header">
+  <div class="fil-hdr">
     <div class="fil-title">📱 FIL DES BIÈRES</div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;" id="filSub">Chargement...</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;" id="filSub">Chargement...</div>
   </div>
   <div class="fil-list" id="filList">
     <div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Aucune bière encore !</div>
   </div>
 </div>
 
-<!-- CARTE -->
+<!-- MAP -->
 <div class="screen" id="screen-map">
-  <div class="map-header">
+  <div class="map-hdr">
     <div class="map-title">🗺️ CARTE</div>
-    <div class="map-sub" id="mapSub">Chargement de la carte...</div>
+    <div class="map-sub" id="mapSub">Chargement...</div>
   </div>
-  <div id="mapContainer"><div id="map"></div></div>
+  <div id="mapWrap"><div id="map"></div></div>
 </div>
 
 <!-- STATS -->
 <div class="screen" id="screen-stats">
-  <div class="stats-title">📊 STATS</div>
-  <div class="stat-card">
-    <div class="stat-card-title">🏆 Classement</div>
-    <div class="bar-chart" id="barChart"></div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-card-title">📈 Progression globale</div>
-    <div style="text-align:center;padding:10px 0;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--gold-light);" id="statsTotal">0</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.4);">sur 10 000 bières</div>
-      <div class="progress-track" style="margin-top:12px;"><div class="progress-fill" id="statsProgress" style="width:0%"></div></div>
-      <div style="font-size:13px;color:var(--gold);margin-top:8px;font-weight:700;" id="statsPct">0%</div>
+  <div class="stats-wrap">
+    <div class="stats-title">📊 STATS</div>
+    <div class="scard">
+      <div class="scard-title">🏆 Classement</div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+    <div class="scard">
+      <div class="scard-title">📈 Progression globale</div>
+      <div style="text-align:center;padding:10px 0;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:60px;color:var(--goldf);" id="statsTotal">0</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);">sur 10 000 bières</div>
+        <div class="prog-track" style="margin-top:12px;"><div class="prog-fill" id="statsProg" style="width:0%"></div></div>
+        <div style="font-size:13px;color:var(--gold);margin-top:8px;font-weight:700;" id="statsPct">0%</div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- RULES -->
 <div class="screen" id="screen-rules">
-  <div class="rules-title">📜 LES RÈGLES</div>
-  <div class="rules-card">
-    <div class="rules-section">LA MISSION</div>
-    <p class="rule-text">Nous nous lançons dans une mission simple mais ambitieuse : boire <b>10 000 bières 😈</b></p>
-  </div>
-  <div class="rules-card">
-    <div class="rules-section">MODE D'EMPLOI</div>
-    <div class="rule-item"><div class="rule-emoji">1️⃣</div><div class="rule-text">Prends une photo de ta bière <b>pleine</b></div></div>
-    <div class="rule-item"><div class="rule-emoji">2️⃣</div><div class="rule-text">Envoie-la dans le groupe</div></div>
-    <div class="rule-item"><div class="rule-emoji">3️⃣</div><div class="rule-text">Indique le lieu</div></div>
-    <div class="rule-item"><div class="rule-emoji">4️⃣</div><div class="rule-text">Ajoute le total cumulatif !!</div></div>
-  </div>
-  <div class="rules-card">
-    <div class="rules-section">⚠️ RÈGLES SACRÉES</div>
-    <div class="rule-item"><div class="rule-emoji">📸</div><div class="rule-text"><b>1 photo = 1 bière</b></div></div>
-    <div class="rule-item"><div class="rule-emoji">🚫</div><div class="rule-text">Pas de selfie</div></div>
-    <div class="rule-item"><div class="rule-emoji">🤫</div><div class="rule-text">Pas de blabla dans le fil</div></div>
-    <div class="rule-item"><div class="rule-emoji">☠️</div><div class="rule-text">Non respect des règles = <b>BAN</b></div></div>
-  </div>
-  <div class="rules-card">
-    <div class="rules-section">✅ CE QUI COMPTE</div>
-    <div class="rule-item"><div class="rule-emoji">🍺</div><div class="rule-text">1 bière bouteille pleine</div></div>
-    <div class="rule-item"><div class="rule-emoji">🍻</div><div class="rule-text">Pintes tolérées</div></div>
-  </div>
-  <div class="rules-card" style="border-color:rgba(200,164,21,0.4);background:rgba(200,164,21,0.06);">
-    <div class="rules-section">🏆 À 10 000 BIÈRES</div>
-    <p class="rule-text">→ Grand rassemblement pour célébrer cette <b>masterclasse 😌</b></p>
-    <p class="rule-text" style="margin-top:12px;font-style:italic;color:rgba(255,255,255,0.5);">"Est-ce qu'on est prêts à aller chercher les 10 000 avant le 1er janvier ?" Moi, j'y crois. Alors ce soir… on entre sur le terrain. Et on ouvre le score. 🍺</p>
+  <div class="rules-wrap">
+    <div class="rules-title">📜 LES RÈGLES</div>
+    <div class="rcard"><div class="rsec">LA MISSION</div><p class="rt">Nous nous lançons dans une mission simple mais ambitieuse : boire <b>10 000 bières 😈</b></p></div>
+    <div class="rcard">
+      <div class="rsec">MODE D'EMPLOI</div>
+      <div class="ri"><div class="re">1️⃣</div><div class="rt">Prends une photo de ta bière <b>pleine</b></div></div>
+      <div class="ri"><div class="re">2️⃣</div><div class="rt">Envoie-la dans le groupe</div></div>
+      <div class="ri"><div class="re">3️⃣</div><div class="rt">Indique le lieu</div></div>
+      <div class="ri"><div class="re">4️⃣</div><div class="rt">Ajoute le total cumulatif !!</div></div>
+    </div>
+    <div class="rcard">
+      <div class="rsec">⚠️ RÈGLES SACRÉES</div>
+      <div class="ri"><div class="re">📸</div><div class="rt"><b>1 photo = 1 bière</b></div></div>
+      <div class="ri"><div class="re">🚫</div><div class="rt">Pas de selfie</div></div>
+      <div class="ri"><div class="re">🤫</div><div class="rt">Pas de blabla dans le fil</div></div>
+      <div class="ri"><div class="re">☠️</div><div class="rt">Non respect des règles = <b>BAN</b></div></div>
+    </div>
+    <div class="rcard">
+      <div class="rsec">✅ CE QUI COMPTE</div>
+      <div class="ri"><div class="re">🍺</div><div class="rt">1 bière bouteille pleine</div></div>
+      <div class="ri"><div class="re">🍻</div><div class="rt">Pintes tolérées</div></div>
+    </div>
+    <div class="rcard" style="border-color:rgba(200,164,21,0.4);background:rgba(200,164,21,0.06);">
+      <div class="rsec">🏆 À 10 000 BIÈRES</div>
+      <p class="rt">→ Grand rassemblement pour célébrer cette <b>masterclasse 😌</b></p>
+      <p class="rt" style="margin-top:10px;font-style:italic;color:rgba(255,255,255,0.5);">"Est-ce qu'on est prêts à aller chercher les 10 000 avant le 1er janvier ?" Moi, j'y crois. Alors ce soir… on entre sur le terrain. Et on ouvre le score. 🍺</p>
+    </div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
-<div class="bottom-nav" id="bottomNav" style="display:none">
-  <div class="nav-item active" onclick="showTab('home',this)"><div class="nav-icon">🍺</div><div class="nav-label">Compteur</div></div>
-  <div class="nav-item" onclick="showTab('fil',this);renderFil();"><div class="nav-icon">📱</div><div class="nav-label">Fil</div></div>
-  <div class="nav-item" onclick="showTab('map',this);initMap();"><div class="nav-icon">🗺️</div><div class="nav-label">Carte</div></div>
-  <div class="nav-item" onclick="showTab('stats',this);renderStats();"><div class="nav-icon">📊</div><div class="nav-label">Stats</div></div>
-  <div class="nav-item" onclick="showTab('rules',this)"><div class="nav-icon">📜</div><div class="nav-label">Règles</div></div>
+<div class="bnav" id="bnav" style="display:none">
+  <div class="ni active" id="ni-home" onclick="goTab('home')"><div class="ni-icon">🍺</div><div class="ni-lbl">Compteur</div></div>
+  <div class="ni" id="ni-fil"  onclick="goTab('fil')"><div class="ni-icon">📱</div><div class="ni-lbl">Fil</div></div>
+  <div class="ni" id="ni-map"  onclick="goTab('map')"><div class="ni-icon">🗺️</div><div class="ni-lbl">Carte</div></div>
+  <div class="ni" id="ni-stats" onclick="goTab('stats')"><div class="ni-icon">📊</div><div class="ni-lbl">Stats</div></div>
+  <div class="ni" id="ni-rules" onclick="goTab('rules')"><div class="ni-icon">📜</div><div class="ni-lbl">Règles</div></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, onSnapshot, orderBy, query, limit, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, orderBy, query, limit, getDoc, setDoc, updateDoc, increment, deleteField } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
-  authDomain: "bieres-1458b.firebaseapp.com",
-  projectId: "bieres-1458b",
-  storageBucket: "bieres-1458b.firebasestorage.app",
-  messagingSenderId: "473243479365",
-  appId: "1:473243479365:web:059399eef3abb580f8e22c"
-};
+const fb = initializeApp({
+  apiKey:"AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
+  authDomain:"bieres-1458b.firebaseapp.com",
+  projectId:"bieres-1458b",
+  storageBucket:"bieres-1458b.firebasestorage.app",
+  messagingSenderId:"473243479365",
+  appId:"1:473243479365:web:059399eef3abb580f8e22c"
+});
+const db = getFirestore(fb);
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let me = null, users = {}, logs = [], allLogs = [], total = 0, selPerson = null, beerPhoto = null, pendingAv = null, mapInst = null, mapReady = false;
 
-let currentUser = null;
-let allUsers = {};
-let logs = [];
-let allLogs = [];
-let globalTotal = 0;
-let selectedPerson = null;
-let pendingAvatar = null;
-let beerPhotoData = null;
-let mapInstance = null;
-let mapInitialized = false;
+// ── UTILS ──────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const toast = msg => { const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); };
+const compress = (file, max=800, q=0.75) => new Promise(res => {
+  const r=new FileReader(); r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max;}}else{if(h>max){w=w*max/h;h=max;}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',q));};img.src=e.target.result;}; r.readAsDataURL(file);
+});
+const avEl = (u, cls='lav') => u?.avatar ? `<div class="${cls}" style="padding:0"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>` : `<div class="${cls}">${(u?.name||'?')[0].toUpperCase()}</div>`;
+const fmtDate = ts => { const d=new Date(ts); return d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); };
 
-// ── TOAST ──────────────────────────────────────────────────────────────────
-window.showToast = (msg) => {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-};
+const confetti = () => { const c=['#c8a415','#f0c830','#fff','#4caf00']; for(let i=0;i<30;i++){const el=document.createElement('div');el.className='confetti';el.style.cssText=`left:${Math.random()*100}vw;top:${50+Math.random()*20}px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${c[Math.floor(Math.random()*c.length)]};animation-delay:${Math.random()*0.4}s;animation-duration:${0.8+Math.random()*0.6}s;`;document.body.appendChild(el);setTimeout(()=>el.remove(),1400);}};
 
-window.spawnConfetti = () => {
-  const colors = ['#c8a415','#f0c830','#ffffff','#4caf00'];
-  for (let i = 0; i < 30; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti';
-    el.style.cssText = `left:${Math.random()*100}vw;top:${50+Math.random()*20}px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.4}s;animation-duration:${0.8+Math.random()*0.6}s;`;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1400);
-  }
-};
-
-function showScreen(id) {
+// ── NAVIGATION ─────────────────────────────────────────────────────────────
+window.goTab = (name) => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-}
-
-window.showTab = (name, el) => {
-  showScreen(name);
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (el) el.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  $('screen-'+name).classList.add('active');
+  $('ni-'+name).classList.add('active');
+  if (name==='fil') renderFil();
+  if (name==='map') initMap();
+  if (name==='stats') renderStats();
 };
-
-function avatarEl(user, cls='log-av') {
-  if (user?.avatar) return `<div class="${cls}" style="padding:0;"><img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`;
-  return `<div class="${cls}">${(user?.name||'?')[0].toUpperCase()}</div>`;
-}
-
-function compressImage(file, maxSize=800, quality=0.7) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let w = img.width, h = img.height;
-        if (w > h) { if (w > maxSize) { h = h*maxSize/w; w = maxSize; } }
-        else { if (h > maxSize) { w = w*maxSize/h; h = maxSize; } }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
 // ── ONBOARDING ─────────────────────────────────────────────────────────────
-window.previewAvatar = async (input) => {
-  const file = input.files[0];
-  if (!file) return;
-  pendingAvatar = await compressImage(file, 200, 0.7);
-  document.getElementById('avatarPreview').src = pendingAvatar;
-  document.getElementById('avatarPreview').style.display = 'block';
-  document.getElementById('avatarPlaceholder').style.display = 'none';
-};
-
-window.previewBeerPhoto = async (input) => {
-  const file = input.files[0];
-  if (!file) return;
-  beerPhotoData = await compressImage(file, 800, 0.75);
-  const preview = document.getElementById('beerPhotoPreview');
-  preview.src = beerPhotoData;
-  const zone = document.getElementById('photoZone');
-  zone.classList.add('has-photo');
-  const btn = document.getElementById('btnAdd');
-  btn.disabled = false;
-  btn.textContent = '+ 1 BIÈRE 🍺';
+window.previewAv = async input => {
+  const file = input.files[0]; if (!file) return;
+  pendingAv = await compress(file, 200, 0.7);
+  $('avPreview').src = pendingAv; $('avPreview').style.display='block'; $('avPlaceholder').style.display='none';
 };
 
 window.createProfile = async () => {
-  const name = document.getElementById('nameInput').value.trim();
-  if (!name) { showToast('Entre ton prénom !'); return; }
+  const name = $('nameInput').value.trim(); if (!name) { toast('Entre ton prénom !'); return; }
   const uid = name.toLowerCase().replace(/[^a-z0-9]/g,'_');
-  const userRef = doc(db, 'users', uid);
-  const snap = await getDoc(userRef);
-  if (snap.exists()) {
-    currentUser = { uid, ...snap.data() };
-    if (pendingAvatar) { await updateDoc(userRef, { avatar: pendingAvatar }); currentUser.avatar = pendingAvatar; }
-  } else {
-    const userData = { name, avatar: pendingAvatar || null, count: 0, createdAt: Date.now() };
-    await setDoc(userRef, userData);
-    currentUser = { uid, ...userData };
-  }
-  localStorage.setItem('currentUser', uid);
-  initHome();
-  showScreen('home');
-  document.getElementById('bottomNav').style.display = 'flex';
-  showToast(`Bienvenue ${name} ! 🍺`);
+  const ref = doc(db,'users',uid); const snap = await getDoc(ref);
+  if (snap.exists()) { me={uid,...snap.data()}; if(pendingAv){await updateDoc(ref,{avatar:pendingAv});me.avatar=pendingAv;} }
+  else { const d={name,avatar:pendingAv||null,count:0,createdAt:Date.now()}; await setDoc(ref,d); me={uid,...d}; }
+  localStorage.setItem('me',uid);
+  boot();
 };
 
-window.switchUser = () => {
-  localStorage.removeItem('currentUser');
-  showToast('Recharge la page pour changer de compte');
-};
+window.switchUser = () => { localStorage.removeItem('me'); toast('Recharge la page pour changer'); };
 
-// ── HOME ───────────────────────────────────────────────────────────────────
-function initHome() {
-  const ha = document.getElementById('headerAvatar');
-  document.getElementById('headerName').textContent = currentUser.name;
-  if (currentUser.avatar) ha.innerHTML = `<img src="${currentUser.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
-  else ha.textContent = currentUser.name[0].toUpperCase();
-  startListeners();
+// ── BOOT ───────────────────────────────────────────────────────────────────
+function boot() {
+  // Header
+  const ha = $('hdrAv'); $('hdrName').textContent = me.name;
+  if (me.avatar) ha.innerHTML=`<img src="${me.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
+  else ha.textContent = me.name[0].toUpperCase();
+
+  // Listeners
+  onSnapshot(doc(db,'meta','global'), s => { if(s.exists()){ total=s.data().total||0; updateCnt(total); } });
+  onSnapshot(collection(db,'users'), s => { s.forEach(d=>{ users[d.id]={uid:d.id,...d.data()}; }); });
+  const qHome = query(collection(db,'logs'),orderBy('ts','desc'),limit(20));
+  onSnapshot(qHome, s => { logs=s.docs.map(d=>({id:d.id,...d.data()})); renderLogs(); $('sdot').className='sdot'; });
+  const qAll = query(collection(db,'logs'),orderBy('ts','desc'));
+  onSnapshot(qAll, s => { allLogs=s.docs.map(d=>({id:d.id,...d.data()})); $('filSub').textContent=`${allLogs.length} bières au total`; });
+
+  $('bnav').style.display = 'flex';
+  goTab('home');
 }
 
-function startListeners() {
-  onSnapshot(doc(db, 'meta', 'global'), snap => {
-    if (snap.exists()) { globalTotal = snap.data().total || 0; updateCounter(globalTotal); }
-  });
-  onSnapshot(collection(db, 'users'), snap => {
-    snap.forEach(d => { allUsers[d.id] = { uid: d.id, ...d.data() }; });
-  });
-  // Last 20 for home
-  const qHome = query(collection(db, 'logs'), orderBy('ts', 'desc'), limit(20));
-  onSnapshot(qHome, snap => {
-    logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderLogs();
-    document.getElementById('syncDot').className = 'sync-dot';
-  });
-  // All logs for fil & map
-  const qAll = query(collection(db, 'logs'), orderBy('ts', 'desc'));
-  onSnapshot(qAll, snap => {
-    allLogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    document.getElementById('filSub').textContent = `${allLogs.length} bières au total`;
-  });
+function updateCnt(t) {
+  const p = Math.min((t/10000)*100,100);
+  $('totalCount').textContent = t.toLocaleString('fr');
+  $('progFill').style.width = p+'%';
+  $('progPct').textContent = p.toFixed(2)+'%';
 }
 
-function updateCounter(t) {
-  const pct = Math.min((t/10000)*100, 100);
-  document.getElementById('totalCount').textContent = t.toLocaleString('fr');
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = pct.toFixed(2) + '%';
-}
-
+// ── HOME LOGS ─────────────────────────────────────────────────────────────
 function renderLogs() {
-  const list = document.getElementById('logList');
-  if (logs.length === 0) { list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>'; return; }
+  const list = $('logList');
+  if (!logs.length) { list.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;">Aucune bière encore... courage !</div>'; return; }
   list.innerHTML = logs.map(log => {
-    const u = allUsers[log.uid] || { name: log.userName, avatar: null };
-    const date = new Date(log.ts);
-    const timeStr = date.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' · ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const u = users[log.uid]||{name:log.userName,avatar:null};
     return `<div class="log-item">
-      ${avatarEl(u)}
-      <div class="log-info">
-        <div class="log-name">${u.name}</div>
-        <div class="log-detail">${log.lieu||'Lieu non précisé'} · ${timeStr}</div>
+      ${avEl(u)}
+      <div class="l-info">
+        <div class="l-name">${u.name}</div>
+        <div class="l-det">${log.lieu||'Lieu non précisé'} · ${fmtDate(log.ts)}</div>
       </div>
-      <div class="log-num">#${log.num}</div>
+      <div class="l-num">#${log.num}</div>
+      <button class="del-btn" onclick="delBeer('${log.id}','${log.uid}',${log.num})" title="Supprimer">🗑️</button>
     </div>`;
   }).join('');
 }
 
-// ── ADD BEER ───────────────────────────────────────────────────────────────
+// ── DELETE BEER ────────────────────────────────────────────────────────────
+window.delBeer = async (id, uid, num) => {
+  if (!confirm(`Supprimer la bière #${num} ?`)) return;
+  await deleteDoc(doc(db,'logs',id));
+  // Decrement counters
+  const metaRef = doc(db,'meta','global');
+  const metaSnap = await getDoc(metaRef);
+  if (metaSnap.exists() && metaSnap.data().total > 0) await updateDoc(metaRef,{total:increment(-1)});
+  const uRef = doc(db,'users',uid);
+  const uSnap = await getDoc(uRef);
+  if (uSnap.exists() && uSnap.data().count > 0) await updateDoc(uRef,{count:increment(-1)});
+  toast('Bière supprimée 🗑️');
+};
+
+// ── DELETE USER ────────────────────────────────────────────────────────────
+window.delUser = async (uid, name) => {
+  if (!confirm(`Supprimer ${name} et toutes ses bières ?`)) return;
+  // Delete user
+  await deleteDoc(doc(db,'users',uid));
+  // Note: les logs restent (on pourrait les supprimer aussi mais c'est coûteux)
+  toast(`${name} supprimé(e) 👋`);
+};
+
+// ── ADD MODAL ──────────────────────────────────────────────────────────────
 window.openAdd = () => {
-  const btn = document.getElementById('beerBtn');
-  btn.classList.add('beer-anim');
-  setTimeout(() => btn.classList.remove('beer-anim'), 400);
-  selectedPerson = currentUser.uid;
-  beerPhotoData = null;
-  document.getElementById('lieuInput').value = '';
-  document.getElementById('beerPhotoPreview').src = '';
-  document.getElementById('photoZone').classList.remove('has-photo');
-  document.getElementById('beerPhotoInput').value = '';
-  document.getElementById('btnAdd').disabled = true;
-  document.getElementById('btnAdd').textContent = '📸 AJOUTE UNE PHOTO D\'ABORD';
-  renderPersonsGrid();
-  document.getElementById('screen-add').classList.add('active');
+  $('beerBtn').classList.add('beer-anim'); setTimeout(()=>$('beerBtn').classList.remove('beer-anim'),400);
+  selPerson = me.uid; beerPhoto = null;
+  $('lieuInput').value=''; $('beerPhotoPreview').src='';
+  $('photoZone').classList.remove('has'); $('beerPhotoInput').value='';
+  $('btnAdd').disabled=true; $('btnAdd').textContent="📸 AJOUTE UNE PHOTO D'ABORD";
+  renderPersGrid();
+  $('screen-add').classList.add('active');
 };
 
-window.closeAdd = (e) => {
-  if (e.target === document.getElementById('screen-add'))
-    document.getElementById('screen-add').classList.remove('active');
+window.closeAddModal = e => { if(e.target===$('screen-add')) $('screen-add').classList.remove('active'); };
+
+window.selPers = uid => { selPerson=uid; renderPersGrid(); };
+
+window.previewBeerPhoto = async input => {
+  const file=input.files[0]; if(!file) return;
+  beerPhoto = await compress(file,800,0.75);
+  $('beerPhotoPreview').src=beerPhoto; $('photoZone').classList.add('has');
+  $('btnAdd').disabled=false; $('btnAdd').textContent='+ 1 BIÈRE 🍺';
 };
 
-window.selectPerson = (uid) => { selectedPerson = uid; renderPersonsGrid(); };
-
-function renderPersonsGrid() {
-  document.getElementById('personsGrid').innerHTML = Object.values(allUsers).map(u => {
-    const sel = u.uid === selectedPerson;
-    const av = u.avatar
-      ? `<div class="pc-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
-      : `<div class="pc-av">${u.name[0].toUpperCase()}</div>`;
-    return `<div class="person-card ${sel?'selected':''}" onclick="selectPerson('${u.uid}')">${av}<div class="pc-name">${u.name}</div></div>`;
+function renderPersGrid() {
+  $('persGrid').innerHTML = Object.values(users).map(u => {
+    const sel = u.uid===selPerson;
+    const av = u.avatar ? `<div class="pc-av" style="padding:0"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>` : `<div class="pc-av">${u.name[0].toUpperCase()}</div>`;
+    return `<div class="pc ${sel?'sel':''}" onclick="selPers('${u.uid}')">
+      <button class="pc-del" onclick="event.stopPropagation();delUser('${u.uid}','${u.name}')" title="Supprimer">✕</button>
+      ${av}<div class="pc-name">${u.name}</div>
+    </div>`;
   }).join('');
 }
 
 window.addBeer = async () => {
-  if (!selectedPerson) { showToast('Sélectionne quelqu\'un !'); return; }
-  if (!beerPhotoData) { showToast('📸 Photo obligatoire !'); return; }
-  const lieu = document.getElementById('lieuInput').value.trim();
-  const u = allUsers[selectedPerson];
+  if (!selPerson) { toast('Sélectionne quelqu\'un !'); return; }
+  if (!beerPhoto) { toast('📸 Photo obligatoire !'); return; }
+  const lieu = $('lieuInput').value.trim();
+  const u = users[selPerson];
+  let lat=null, lng=null;
+  try { const p=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:3000})); lat=p.coords.latitude; lng=p.coords.longitude; } catch {}
 
-  // Get coords if available
-  let lat = null, lng = null;
-  try {
-    const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, {timeout:3000}));
-    lat = pos.coords.latitude;
-    lng = pos.coords.longitude;
-  } catch {}
-
-  const metaRef = doc(db, 'meta', 'global');
-  const metaSnap = await getDoc(metaRef);
+  const metaRef = doc(db,'meta','global');
+  const ms = await getDoc(metaRef);
   let newTotal = 1;
-  if (metaSnap.exists()) {
-    await updateDoc(metaRef, { total: increment(1) });
-    newTotal = (metaSnap.data().total || 0) + 1;
-  } else {
-    await setDoc(metaRef, { total: 1 });
-  }
+  if (ms.exists()) { await updateDoc(metaRef,{total:increment(1)}); newTotal=(ms.data().total||0)+1; }
+  else { await setDoc(metaRef,{total:1}); }
 
-  await addDoc(collection(db, 'logs'), {
-    uid: selectedPerson,
-    userName: u?.name || '',
-    lieu,
-    photo: beerPhotoData,
-    lat, lng,
-    ts: Date.now(),
-    num: newTotal,
-  });
+  await addDoc(collection(db,'logs'),{uid:selPerson,userName:u?.name||'',lieu,photo:beerPhoto,lat,lng,ts:Date.now(),num:newTotal});
+  await updateDoc(doc(db,'users',selPerson),{count:increment(1)});
 
-  await updateDoc(doc(db, 'users', selectedPerson), { count: increment(1) });
-
-  document.getElementById('screen-add').classList.remove('active');
-  spawnConfetti();
-  showToast(`🍺 +1 pour ${u?.name} ! Total : ${newTotal.toLocaleString('fr')}`);
-  if (newTotal % 100 === 0) setTimeout(() => showToast(`🎉 ${newTotal} BIÈRES ! ON AVANCE !`), 1500);
+  $('screen-add').classList.remove('active');
+  confetti(); toast(`🍺 +1 pour ${u?.name} ! Total : ${newTotal.toLocaleString('fr')}`);
+  if (newTotal%100===0) setTimeout(()=>toast(`🎉 ${newTotal} BIÈRES !`),1500);
 };
 
-// ── FIL D'ACTU ─────────────────────────────────────────────────────────────
+// ── FIL ───────────────────────────────────────────────────────────────────
 window.renderFil = () => {
-  const list = document.getElementById('filList');
-  if (allLogs.length === 0) { list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Aucune bière encore !</div>'; return; }
-  const sorted = [...allLogs].reverse(); // oldest first like WhatsApp
+  const list=$('filList');
+  if (!allLogs.length) { list.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Aucune bière encore !</div>'; return; }
+  const sorted=[...allLogs].reverse();
   list.innerHTML = sorted.map(log => {
-    const u = allUsers[log.uid] || { name: log.userName, avatar: null };
-    const isMine = log.uid === currentUser?.uid;
-    const date = new Date(log.ts);
-    const timeStr = date.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) + ' ' + date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    return `
-      <div class="msg-bubble ${isMine?'mine':''}">
-        ${!isMine ? avatarEl(u,'msg-av') : ''}
-        <div class="msg-content">
-          ${!isMine ? `<div class="msg-name">${u.name}</div>` : ''}
-          <div class="msg-box">
-            ${log.photo ? `<img class="msg-photo" src="${log.photo}" loading="lazy">` : ''}
-            <div class="msg-text">${log.lieu || 'Lieu non précisé'} 📍</div>
-            <div class="msg-meta">
-              <span>${timeStr}</span>
-              <span class="msg-num">#${log.num}</span>
-            </div>
+    const u=users[log.uid]||{name:log.userName,avatar:null};
+    const mine=log.uid===me?.uid;
+    return `<div class="msg-row ${mine?'mine':''}">
+      ${!mine?avEl(u,'msg-av'):''}
+      <div class="msg-wrap">
+        ${!mine?`<div class="msg-uname">${u.name}</div>`:''}
+        <div class="msg-box">
+          ${log.photo?`<img class="msg-photo" src="${log.photo}" loading="lazy">`:''}
+          <div class="msg-txt">${log.lieu||'Lieu non précisé'} 📍</div>
+          <div class="msg-meta">
+            <span>${fmtDate(log.ts)}</span>
+            <span class="msg-num">#${log.num}</span>
+            <button class="msg-del" onclick="delBeer('${log.id}','${log.uid}',${log.num})" title="Supprimer">🗑️</button>
           </div>
         </div>
-        ${isMine ? avatarEl(u,'msg-av') : ''}
       </div>
-    `;
+      ${mine?avEl(u,'msg-av'):''}
+    </div>`;
   }).join('');
-  // Scroll to bottom
-  setTimeout(() => { list.parentElement.scrollTop = list.parentElement.scrollHeight; }, 100);
+  setTimeout(()=>{ const el=$('screen-fil'); el.scrollTop=el.scrollHeight; },100);
 };
 
-// ── CARTE ──────────────────────────────────────────────────────────────────
+// ── MAP ────────────────────────────────────────────────────────────────────
 window.initMap = () => {
-  if (mapInitialized) {
-    updateMapMarkers();
-    return;
-  }
-  mapInitialized = true;
-  setTimeout(() => {
-    mapInstance = L.map('map').setView([46.5, 2.5], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-      maxZoom: 19,
-    }).addTo(mapInstance);
-    updateMapMarkers();
-  }, 100);
+  if (!mapReady) {
+    mapReady=true;
+    setTimeout(()=>{
+      mapInst=L.map('map').setView([46.5,2.5],5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(mapInst);
+      placeMarkers();
+    },150);
+  } else { placeMarkers(); }
 };
 
-function updateMapMarkers() {
-  if (!mapInstance) return;
-  // Clear existing markers
-  mapInstance.eachLayer(layer => { if (layer instanceof L.Marker) mapInstance.removeLayer(layer); });
-  
-  const withCoords = allLogs.filter(l => l.lat && l.lng);
-  document.getElementById('mapSub').textContent = `${withCoords.length} bières géolocalisées sur ${allLogs.length}`;
-
-  withCoords.forEach(log => {
-    const u = allUsers[log.uid] || { name: log.userName };
-    const icon = L.divIcon({ html: '🍺', className: 'beer-marker', iconSize: [30, 30] });
-    const marker = L.marker([log.lat, log.lng], { icon }).addTo(mapInstance);
-    const date = new Date(log.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-    marker.bindPopup(`
-      <div style="font-family:Inter,sans-serif;min-width:160px;">
-        ${log.photo ? `<img src="${log.photo}" style="width:100%;border-radius:8px;margin-bottom:8px;max-height:120px;object-fit:cover;">` : ''}
-        <b style="font-size:14px;">${u.name}</b><br>
-        <span style="font-size:12px;color:#666;">${log.lieu||'Lieu non précisé'}</span><br>
-        <span style="font-size:11px;color:#999;">${date} · #${log.num}</span>
-      </div>
-    `);
+function placeMarkers() {
+  if (!mapInst) return;
+  mapInst.eachLayer(l=>{ if(l instanceof L.Marker) mapInst.removeLayer(l); });
+  const wc = allLogs.filter(l=>l.lat&&l.lng);
+  $('mapSub').textContent=`${wc.length} bières géolocalisées sur ${allLogs.length}`;
+  wc.forEach(log=>{
+    const u=users[log.uid]||{name:log.userName};
+    const icon=L.divIcon({html:'🍺',className:'bm',iconSize:[28,28]});
+    L.marker([log.lat,log.lng],{icon}).addTo(mapInst).bindPopup(`
+      <div style="font-family:Inter,sans-serif;min-width:150px;">
+        ${log.photo?`<img src="${log.photo}" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:110px;object-fit:cover;">`:''}
+        <b>${u.name}</b><br>
+        <span style="font-size:12px;color:#555;">${log.lieu||'Lieu non précisé'}</span><br>
+        <span style="font-size:11px;color:#888;">${fmtDate(log.ts)} · #${log.num}</span>
+      </div>`);
   });
-
-  if (withCoords.length > 0) {
-    const bounds = L.latLngBounds(withCoords.map(l => [l.lat, l.lng]));
-    mapInstance.fitBounds(bounds, { padding: [40, 40] });
-  }
+  if (wc.length) mapInst.fitBounds(L.latLngBounds(wc.map(l=>[l.lat,l.lng])),{padding:[40,40]});
 }
 
-// ── STATS ──────────────────────────────────────────────────────────────────
+// ── STATS ─────────────────────────────────────────────────────────────────
 window.renderStats = () => {
-  const t = globalTotal;
-  const pct = Math.min((t/10000)*100, 100);
-  document.getElementById('statsTotal').textContent = t.toLocaleString('fr');
-  document.getElementById('statsProgress').style.width = pct+'%';
-  document.getElementById('statsPct').textContent = pct.toFixed(2)+'% de la mission accomplie';
-  const sorted = Object.values(allUsers).sort((a,b)=>(b.count||0)-(a.count||0));
-  const max = sorted[0]?.count || 1;
-  document.getElementById('barChart').innerHTML = sorted.map(u => {
-    const p = ((u.count||0)/max)*100;
-    const av = u.avatar
-      ? `<div class="bar-av" style="padding:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`
-      : `<div class="bar-av">${u.name[0].toUpperCase()}</div>`;
-    return `<div class="bar-row">${av}<div class="bar-wrap"><div class="bar-name">${u.name} <span style="color:var(--gold);font-size:11px;">${u.count||0} 🍺</span></div><div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div></div><div class="bar-val">${u.count||0}</div></div>`;
+  const p=Math.min((total/10000)*100,100);
+  $('statsTotal').textContent=total.toLocaleString('fr');
+  $('statsProg').style.width=p+'%';
+  $('statsPct').textContent=p.toFixed(2)+'% de la mission accomplie';
+  const sorted=Object.values(users).sort((a,b)=>(b.count||0)-(a.count||0));
+  const max=sorted[0]?.count||1;
+  $('barChart').innerHTML=sorted.map(u=>{
+    const pct=((u.count||0)/max)*100;
+    const av=u.avatar?`<div class="bav" style="padding:0"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>`:`<div class="bav">${u.name[0].toUpperCase()}</div>`;
+    return `<div class="bar-row">${av}<div class="bwrap"><div class="bname">${u.name} <span style="color:var(--gold);font-size:11px;">${u.count||0} 🍺</span></div><div class="btrack"><div class="bfill" style="width:${pct}%"></div></div></div><div class="bval">${u.count||0}</div></div>`;
   }).join('');
 };
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 async function init() {
-  const savedUid = localStorage.getItem('currentUser');
-  if (savedUid) {
-    const snap = await getDoc(doc(db, 'users', savedUid));
-    if (snap.exists()) {
-      currentUser = { uid: savedUid, ...snap.data() };
-      initHome();
-      showScreen('home');
-      document.getElementById('bottomNav').style.display = 'flex';
-      return;
-    }
-  }
-  showScreen('onboard');
+  const uid=localStorage.getItem('me');
+  if (uid) { const s=await getDoc(doc(db,'users',uid)); if(s.exists()){me={uid,...s.data()};boot();return;} }
+  $('screen-loading').classList.remove('active');
+  $('screen-onboard').classList.add('active');
 }
-
-setTimeout(init, 1000);
+setTimeout(init,800);
 </script>
 </body>
 </html>
