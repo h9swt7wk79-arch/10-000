@@ -329,6 +329,40 @@
   </div>
 </div>
 
+<!-- PROFIL -->
+<div class="screen" id="screen-profil">
+  <div style="padding:56px 20px 20px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--goldf);letter-spacing:2px;margin-bottom:20px;">👥 PROFILS</div>
+    <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:16px;">Clique sur un profil pour modifier le nom ou la photo.</p>
+    <div id="profilList" style="display:flex;flex-direction:column;gap:12px;"></div>
+  </div>
+</div>
+
+<!-- EDIT PROFIL MODAL -->
+<div id="editModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(4px);">
+  <div style="background:linear-gradient(160deg,#0f4500,#1a5c00);border-top-left-radius:28px;border-top-right-radius:28px;width:100%;max-width:480px;padding:12px 24px 40px;border-top:1px solid rgba(200,164,21,0.3);animation:slideUp 0.3s ease;">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 20px;"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--goldf);letter-spacing:2px;margin-bottom:20px;">MODIFIER LE PROFIL</div>
+
+    <!-- Avatar -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <div id="editAvPreview" onclick="document.getElementById('editAvInput').click()" style="width:80px;height:80px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;cursor:pointer;overflow:hidden;border:3px dashed var(--gold);flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);">Clique sur la photo pour changer</div>
+        <input type="file" id="editAvInput" accept="image/*" style="display:none" onchange="previewEditAv(this)">
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Prénom</div>
+    <input id="editName" type="text" class="field" style="text-align:left;margin-bottom:20px;" placeholder="Nouveau prénom">
+
+    <div style="display:flex;gap:10px;">
+      <button onclick="closeEditModal()" style="flex:1;padding:14px;background:rgba(255,255,255,0.1);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;border:none;border-radius:12px;cursor:pointer;">ANNULER</button>
+      <button onclick="saveEdit()" style="flex:2;padding:14px;background:linear-gradient(135deg,var(--gold),var(--goldf));color:var(--gd);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;border:none;border-radius:12px;cursor:pointer;">ENREGISTRER</button>
+    </div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <div class="bnav" id="bnav" style="display:none">
   <div class="ni active" id="ni-home" onclick="goTab('home')"><div class="ni-icon">🍺</div><div class="ni-lbl">Compteur</div></div>
@@ -336,6 +370,7 @@
   <div class="ni" id="ni-map"  onclick="goTab('map')"><div class="ni-icon">🗺️</div><div class="ni-lbl">Carte</div></div>
   <div class="ni" id="ni-stats" onclick="goTab('stats')"><div class="ni-icon">📊</div><div class="ni-lbl">Stats</div></div>
   <div class="ni" id="ni-rules" onclick="goTab('rules')"><div class="ni-icon">📜</div><div class="ni-lbl">Règles</div></div>
+  <div class="ni" id="ni-profil" onclick="goTab('profil')"><div class="ni-icon">👥</div><div class="ni-lbl">Profils</div></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -375,7 +410,73 @@ window.goTab = (name) => {
   if (name==='fil') renderFil();
   if (name==='map') initMap();
   if (name==='stats') renderStats();
+  if (name==='profil') renderProfil();
 };
+
+// ── PROFIL EDIT ─────────────────────────────────────────────────────────────
+let editingUid = null, editingNewAvatar = null;
+
+window.renderProfil = () => {
+  const list = $('profilList');
+  const usersArr = Object.values(users).sort((a,b)=>(b.count||0)-(a.count||0));
+  list.innerHTML = usersArr.map(u => {
+    const av = u.avatar
+      ? `<div style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;"></div>`
+      : `<div style="width:56px;height:56px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;flex-shrink:0;">${u.name[0].toUpperCase()}</div>`;
+    return `<div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="openEditModal('${u.uid}')">
+      ${av}
+      <div style="flex:1;"><div style="font-weight:700;font-size:15px;">${u.name}</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">${u.count||0} bières 🍺</div></div>
+      <div style="color:var(--gold);font-size:20px;">✏️</div>
+    </div>`;
+  }).join('');
+};
+
+window.openEditModal = (uid) => {
+  editingUid = uid; editingNewAvatar = null;
+  const u = users[uid]; if (!u) return;
+  $('editName').value = u.name;
+  const prev = $('editAvPreview');
+  if (u.avatar) { prev.innerHTML = `<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; }
+  else { prev.textContent = u.name[0].toUpperCase(); }
+  $('editModal').style.display = 'flex';
+};
+
+window.closeEditModal = () => { $('editModal').style.display='none'; editingUid=null; editingNewAvatar=null; };
+
+window.previewEditAv = async (input) => {
+  const file = input.files[0]; if (!file) return;
+  editingNewAvatar = await compress(file, 200, 0.7);
+  $('editAvPreview').innerHTML = `<img src="${editingNewAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+};
+
+window.saveEdit = async () => {
+  if (!editingUid) return;
+  const newName = $('editName').value.trim();
+  if (!newName) { toast('Entre un prénom !'); return; }
+  const updates = { name: newName };
+  if (editingNewAvatar) updates.avatar = editingNewAvatar;
+  try {
+    await updateDoc(doc(db,'users',editingUid), updates);
+    if (users[editingUid]) { users[editingUid].name=newName; if(editingNewAvatar) users[editingUid].avatar=editingNewAvatar; }
+    if (editingUid === me?.uid) {
+      me.name=newName; if(editingNewAvatar) me.avatar=editingNewAvatar;
+      $('hdrName').textContent=newName;
+      if(editingNewAvatar) $('hdrAv').innerHTML=`<img src="${editingNewAvatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`;
+    }
+    toast('✅ Profil mis à jour !');
+    closeEditModal();
+    renderProfil();
+  } catch(e) { toast('Erreur 😕'); }
+};
+
+
+
+
+
+
+
+
+
 
 // ── ONBOARDING ─────────────────────────────────────────────────────────────
 window.previewAv = async input => {
