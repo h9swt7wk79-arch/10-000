@@ -13,16 +13,18 @@
     .sub{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:32px;}
     .card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;margin-bottom:20px;}
     .card-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:12px;}
-    textarea{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:14px;color:#fff;font-family:'Inter',sans-serif;font-size:12px;height:200px;resize:vertical;outline:none;}
-    textarea:focus{border-color:var(--gold);}
+    textarea{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:14px;color:#fff;font-family:'Inter',sans-serif;font-size:12px;height:180px;resize:vertical;outline:none;}
     .btn{padding:14px 24px;background:linear-gradient(135deg,var(--gold),var(--goldf));color:var(--gd);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;border:none;border-radius:12px;cursor:pointer;margin-top:12px;width:100%;}
     .btn:disabled{opacity:0.4;cursor:not-allowed;}
-    .preview-list{display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto;margin-top:12px;}
+    .btn-sm{padding:10px 18px;font-size:16px;width:auto;}
+    .preview-list{display:flex;flex-direction:column;gap:6px;max-height:500px;overflow-y:auto;margin-top:12px;}
     .pi{background:rgba(255,255,255,0.05);border-radius:10px;padding:8px 12px;display:flex;gap:10px;align-items:center;font-size:12px;}
     .pi .num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--goldf);min-width:38px;}
     .pi .info{flex:1;}
     .pi .name{font-weight:700;}
     .pi .det{color:rgba(255,255,255,0.5);font-size:11px;margin-top:1px;}
+    .pi .thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+    .pi .no-photo{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
     .stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
     .stat{background:rgba(200,164,21,0.15);border:1px solid rgba(200,164,21,0.3);border-radius:12px;padding:10px 14px;text-align:center;flex:1;min-width:90px;}
     .stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--goldf);}
@@ -30,19 +32,35 @@
     .prog-bar{background:rgba(255,255,255,0.1);border-radius:100px;height:14px;overflow:hidden;margin:10px 0;}
     .prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--goldf));border-radius:100px;transition:width 0.3s;width:0%;}
     .prog-txt{font-size:13px;color:var(--gold);font-weight:700;text-align:center;}
-    .log-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:12px;font-size:12px;font-family:monospace;max-height:200px;overflow-y:auto;margin-top:12px;line-height:1.6;}
+    .log-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:12px;font-size:12px;font-family:monospace;max-height:250px;overflow-y:auto;margin-top:12px;line-height:1.7;}
     .lok{color:#4caf00;} .lerr{color:#ff6b6b;} .lskip{color:rgba(255,255,255,0.4);}
     .name-map{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
     .name-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 14px;flex-wrap:wrap;}
     .name-from{font-weight:700;font-size:13px;min-width:160px;}
-    input.map-input{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;outline:none;flex:1;min-width:120px;}
-    input.map-input:focus{border-color:var(--gold);}
-    .ignored-box{background:rgba(255,100,100,0.08);border:1px solid rgba(255,100,100,0.2);border-radius:12px;padding:12px;font-size:12px;color:rgba(255,150,150,0.8);margin-top:10px;max-height:150px;overflow-y:auto;}
+    input.mi{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;outline:none;flex:1;min-width:120px;}
+    input.mi:focus{border-color:var(--gold);}
+
+    /* Drop zone */
+    .drop-zone{border:2px dashed rgba(200,164,21,0.4);border-radius:16px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+    .drop-zone.drag-over{border-color:var(--goldf);background:rgba(200,164,21,0.08);}
+    .drop-zone.loaded{border-color:#4caf00;border-style:solid;}
+    .drop-zone input[type=file]{position:absolute;opacity:0;width:100%;height:100%;top:0;left:0;cursor:pointer;}
+    .drop-icon{font-size:40px;margin-bottom:8px;}
+    .drop-txt{font-size:14px;color:rgba(255,255,255,0.6);}
+    .drop-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;}
+
+    /* Manual add */
+    .manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+    .manual-grid input,.manual-grid select{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:10px 14px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;outline:none;width:100%;}
+    .manual-grid input:focus,.manual-grid select:focus{border-color:var(--gold);}
+    .manual-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;max-height:300px;overflow-y:auto;}
+    .manual-item{background:rgba(255,255,255,0.05);border-radius:10px;padding:8px 12px;display:flex;gap:10px;align-items:center;font-size:12px;}
+    .del-btn{background:rgba(255,60,60,0.2);border:none;border-radius:6px;color:#ff6b6b;padding:4px 8px;cursor:pointer;font-size:13px;}
   </style>
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
+<!-- PASSWORD -->
 <div id="gate" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0a3d00;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;text-align:center;padding:24px;">
   <div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:#f0c830;">🍺</div>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#f0c830;letter-spacing:3px;margin-bottom:24px;">ACCÈS RESTREINT</div>
@@ -52,38 +70,62 @@
 </div>
 
 <h1>🍺 IMPORT WHATSAPP</h1>
-<p class="sub">Colle le contenu exporté de ta conversation WhatsApp pour importer l'historique.</p>
+<p class="sub">Importe l'historique complet avec photos depuis ton export WhatsApp.</p>
 
-<!-- ÉTAPE 1 -->
+<!-- ÉTAPE 1 : Photos -->
 <div class="card">
-  <div class="card-title">Étape 1 — Colle le texte WhatsApp</div>
-  <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;">Format attendu : <code style="color:var(--gold);">[29/05/2026 22:25:19] ~ Hugo Alves: 171 Davez &lt;pièce jointe...&gt;</code></p>
-  <textarea id="waText" placeholder="Colle ici tout le texte exporté..."></textarea>
-  <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px;" id="rawCount"></div>
+  <div class="card-title">Étape 1 — Charge les photos</div>
+  <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:12px;">Sélectionne tous les fichiers du dossier exporté WhatsApp (les .jpg/.jpeg).</p>
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="photoInput" accept="image/*,.jpg,.jpeg" multiple onchange="loadPhotos(this)">
+    <div class="drop-icon">📸</div>
+    <div class="drop-txt">Clique ou glisse les photos ici</div>
+    <div class="drop-sub">Sélectionne tous les fichiers .jpg du dossier WhatsApp</div>
+  </div>
+  <div style="font-size:13px;color:#4caf00;margin-top:10px;font-weight:600;" id="photoCount"></div>
+</div>
+
+<!-- ÉTAPE 2 : Texte -->
+<div class="card">
+  <div class="card-title">Étape 2 — Colle le texte WhatsApp</div>
+  <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:10px;">Colle le contenu du fichier .txt exporté.</p>
+  <textarea id="waText" placeholder="[29/05/2026 22:25:19] ~ Hugo Alves: 171 Davez &#60;pièce jointe : 00003215-PHOTO-2026-05-29-22-25-19.jpg&#62;"></textarea>
   <button class="btn" onclick="parseWA()">🔍 ANALYSER</button>
 </div>
 
-<!-- ÉTAPE 2 : Noms -->
+<!-- ÉTAPE 3 : Noms -->
 <div class="card" id="card-names" style="display:none">
-  <div class="card-title">Étape 2 — Vérifier les prénoms</div>
-  <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Modifie les prénoms si besoin (ex: "~ Loucas BOISSINOT" → "Loucas").</p>
+  <div class="card-title">Étape 3 — Vérifier les prénoms</div>
+  <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Modifie les prénoms si besoin.</p>
   <div class="name-map" id="nameMap"></div>
   <button class="btn" onclick="buildPreview()" style="margin-top:16px;">👀 PRÉVISUALISER</button>
 </div>
 
-<!-- ÉTAPE 3 : Preview -->
+<!-- ÉTAPE 4 : Ajout manuel -->
+<div class="card" id="card-manual" style="display:none">
+  <div class="card-title">Étape 4 — Ajouter les bières manquantes</div>
+  <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:12px;">Ajoute manuellement les bières non détectées.</p>
+  <div class="manual-grid">
+    <input type="number" id="m-num" placeholder="N° bière (ex: 42)" min="1">
+    <input type="text" id="m-name" placeholder="Prénom" list="namesList">
+    <datalist id="namesList"></datalist>
+    <input type="text" id="m-lieu" placeholder="Lieu">
+    <input type="datetime-local" id="m-date">
+  </div>
+  <button class="btn btn-sm" onclick="addManual()" style="margin-bottom:16px;">+ AJOUTER</button>
+  <div class="manual-list" id="manualList"></div>
+  <button class="btn" onclick="buildFinal()">✅ VALIDER ET VOIR LE TOTAL</button>
+</div>
+
+<!-- ÉTAPE 5 : Preview finale -->
 <div class="card" id="card-preview" style="display:none">
-  <div class="card-title">Étape 3 — Prévisualisation</div>
+  <div class="card-title">Étape 5 — Prévisualisation finale</div>
   <div class="stats-row" id="previewStats"></div>
   <div class="preview-list" id="previewList"></div>
-  <div id="ignoredBox" style="display:none">
-    <p style="font-size:12px;color:rgba(255,150,150,0.8);margin-top:12px;margin-bottom:6px;">⚠️ Messages ignorés (pas de numéro de bière détecté) :</p>
-    <div class="ignored-box" id="ignoredList"></div>
-  </div>
   <button class="btn" onclick="startImport()" id="btnImport" style="margin-top:16px;">🚀 LANCER L'IMPORT</button>
 </div>
 
-<!-- ÉTAPE 4 : Import -->
+<!-- ÉTAPE 6 : Import -->
 <div class="card" id="card-import" style="display:none">
   <div class="card-title">Import en cours... 🍺</div>
   <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
@@ -91,7 +133,7 @@
   <div class="log-box" id="logBox"></div>
 </div>
 
-<!-- ÉTAPE 5 : Done -->
+<!-- ÉTAPE 7 : Done -->
 <div class="card" id="card-done" style="display:none">
   <div class="card-title" style="color:#4caf00;">✅ IMPORT TERMINÉ !</div>
   <div class="stats-row" id="doneStats"></div>
@@ -101,7 +143,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, getDoc, setDoc, updateDoc, increment, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, increment, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const fb = initializeApp({
   apiKey:"AIzaSyDCVxiBrCfyS8-lBSuTq2Y1AHouH8cc7eM",
@@ -114,110 +156,130 @@ const fb = initializeApp({
 const db = getFirestore(fb);
 
 const $ = id => document.getElementById(id);
-let parsed = [], waNames = [], nameMapping = {}, toImport = [], ignored = [];
+
+let photoMap = {};    // filename -> base64
+let parsed = [];      // from WhatsApp txt
+let waNames = [];
+let nameMapping = {};
+let manualEntries = [];
+let toImport = [];
 
 // ── PASSWORD ───────────────────────────────────────────────────────────────
 window.checkPwd = () => {
-  if ($('pwdInput').value === '10000bieres') {
-    $('gate').style.display = 'none';
-  } else {
-    $('pwdErr').style.display = 'block';
-    $('pwdInput').value = '';
-    $('pwdInput').focus();
-  }
+  if ($('pwdInput').value === '10000bieres') { $('gate').style.display='none'; }
+  else { $('pwdErr').style.display='block'; $('pwdInput').value=''; $('pwdInput').focus(); }
 };
 
-// ── PARSE ──────────────────────────────────────────────────────────────────
+// ── COMPRESS IMAGE ─────────────────────────────────────────────────────────
+const compress = (file, max=600, q=0.7) => new Promise(res => {
+  const r = new FileReader();
+  r.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > h) { if(w>max){h=h*max/w;w=max;} } else { if(h>max){w=w*max/h;h=max;} }
+      c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      res(c.toDataURL('image/jpeg',q));
+    };
+    img.src = e.target.result;
+  };
+  r.readAsDataURL(file);
+});
+
+// ── LOAD PHOTOS ────────────────────────────────────────────────────────────
+window.loadPhotos = async (input) => {
+  const files = Array.from(input.files).filter(f => f.type.startsWith('image/'));
+  $('photoCount').textContent = `Chargement de ${files.length} photos...`;
+  $('dropZone').classList.add('loaded');
+
+  let done = 0;
+  // Process in parallel batches of 10
+  const BATCH = 10;
+  for (let i = 0; i < files.length; i += BATCH) {
+    const chunk = files.slice(i, i+BATCH);
+    await Promise.all(chunk.map(async file => {
+      const data = await compress(file, 600, 0.7);
+      // Store by filename (various formats)
+      photoMap[file.name] = data;
+      // Also store by the numeric part of the filename for fuzzy matching
+      const numMatch = file.name.match(/(\d{8}-PHOTO-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2})/);
+      if (numMatch) photoMap[numMatch[1]] = data;
+    }));
+    done += chunk.length;
+    $('photoCount').textContent = `✅ ${done}/${files.length} photos chargées`;
+  }
+  $('photoCount').textContent = `✅ ${Object.keys(photoMap).length} photos prêtes !`;
+};
+
+// ── PARSE TXT ──────────────────────────────────────────────────────────────
 window.parseWA = () => {
   const raw = $('waText').value;
   if (!raw.trim()) { alert('Colle le texte !'); return; }
 
   parsed = [];
-  ignored = [];
-
-  // Nettoyage : supprimer les caractères invisibles (LTR mark U+200E, etc.)
-  const text = raw.replace(/\u200e/g, '').replace(/\u202a/g,'').replace(/\u202c/g,'');
+  const text = raw.replace(/\u200e/g,'').replace(/\u202a/g,'').replace(/\u202c/g,'');
   const lines = text.split('\n');
 
-  $('rawCount').textContent = `${lines.length} lignes détectées dans le texte`;
-
-  // Format : [DD/MM/YYYY HH:MM:SS] ~? Prénom Nom: MESSAGE <pièce jointe: ...>
-  // ou sans pièce jointe
   const lineRe = /^\[(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2}:\d{2})\]\s+~?\s*([^:]+?):\s*(.+)$/;
-
-  // Mots-clés à ignorer (messages système)
-  const systemKeywords = [
-    'a créé ce groupe', 'a ajouté', 'a changé', 'supprimé', 'chiffrés',
-    'Ce message a été', 'Vous avez supprimé', 'a quitté', 'a été exclu',
-    'Messages éphémères', 'a rejoint', 'icône', 'description', 'Pardon',
-    'attention', '⚠️', 'selfie interdit', 'interdit', 'J\'utilise WhatsApp'
-  ];
+  const systemKw = ['a créé ce groupe','a ajouté','a changé','supprimé','chiffrés','Ce message','Vous avez supprimé','a quitté','a été exclu','Messages éphémères','a rejoint','icône','description','J\'utilise WhatsApp','attention ⚠️','selfie interdit','pater selfie','⚠️ pater'];
 
   for (const line of lines) {
     if (!line.trim()) continue;
-
     const lm = line.match(lineRe);
     if (!lm) continue;
-
     const [, date, time, rawName, content] = lm;
     const name = rawName.trim();
-
-    // Ignore system messages
-    const lowerContent = content.toLowerCase();
-    if (systemKeywords.some(k => content.includes(k) || lowerContent.includes(k.toLowerCase()))) continue;
     if (name.toLowerCase().includes('objectif 10')) continue;
+    if (systemKw.some(k => content.includes(k))) continue;
 
-    // Clean content : remove <pièce jointe: ...> and invisible chars
-    const cleanContent = content
-      .replace(/<[^>]+>/g, '')
-      .replace(/\u200e/g, '')
-      .trim();
+    // Extract photo filename from <pièce jointe: FILENAME>
+    const photoMatch = content.match(/[<‹]?\s*pièce jointe\s*:\s*([^\s>‹›]+)/i);
+    const photoFilename = photoMatch ? photoMatch[1].trim() : null;
 
-    if (!cleanContent) continue;
+    // Clean content
+    const cleanContent = content.replace(/<[^>]+>/g,'').replace(/[<‹][^›>]*[›>]/g,'').replace(/\u200e/g,'').trim();
+    if (!cleanContent && !photoFilename) continue;
 
-    // Extract beer number — le numéro est au début du message
-    // Gère : "171 Davez", "171, Davez", "171- Davez", "171/172 Davez", etc.
+    // Extract beer number
     const beerRe = /^(\d+)\s*[,\-\/\s]\s*(.*)$|^(\d+)$/;
     const bm = cleanContent.match(beerRe);
+    if (!bm) continue;
 
-    if (!bm) {
-      ignored.push({ name, content: cleanContent, line });
-      continue;
-    }
+    const num = parseInt(bm[1] || bm[3]);
+    if (isNaN(num) || num < 1 || num > 20000) continue;
 
-    const numStr = bm[1] || bm[3];
-    const num = parseInt(numStr);
-    if (isNaN(num) || num < 1 || num > 20000) {
-      ignored.push({ name, content: cleanContent, line });
-      continue;
-    }
-
-    let lieu = (bm[2] || '').trim();
-    if (!lieu) lieu = 'Lieu non précisé';
-    // Clean lieu
-    lieu = lieu.replace(/^[,\-\/\*\s]+/, '').trim();
+    let lieu = (bm[2]||'').trim().replace(/^[,\-\/\*\s]+/,'').trim();
     if (!lieu) lieu = 'Lieu non précisé';
 
-    // Parse timestamp
-    const [d, mo, y] = date.split('/');
-    const [h, mi, s] = time.split(':');
-    const ts = new Date(parseInt(y), parseInt(mo)-1, parseInt(d), parseInt(h), parseInt(mi), parseInt(s)).getTime();
+    const [d,mo,y] = date.split('/');
+    const [h,mi,s] = time.split(':');
+    const ts = new Date(parseInt(y),parseInt(mo)-1,parseInt(d),parseInt(h),parseInt(mi),parseInt(s)).getTime();
 
-    parsed.push({ waName: name, num, lieu, ts });
+    // Find photo
+    let photo = null;
+    if (photoFilename) {
+      photo = photoMap[photoFilename] || null;
+      // Try fuzzy match
+      if (!photo) {
+        const key = Object.keys(photoMap).find(k => k.includes(photoFilename.replace(/\.[^.]+$/,'')) || photoFilename.includes(k));
+        if (key) photo = photoMap[key];
+      }
+    }
+
+    parsed.push({ waName: name, num, lieu, ts, photo, photoFilename });
   }
 
-  // Sort by num then ts
-  parsed.sort((a, b) => a.num - b.num || a.ts - b.ts);
+  parsed.sort((a,b) => a.num - b.num || a.ts - b.ts);
 
-  // Unique names
+  // Dedup by num
+  const seen = new Set();
+  parsed = parsed.filter(e => { if(seen.has(e.num)) return false; seen.add(e.num); return true; });
+
   waNames = [...new Set(parsed.map(p => p.waName))].sort();
 
-  console.log(`Parsed: ${parsed.length} beers, ignored: ${ignored.length}`);
-
-  if (!parsed.length) {
-    alert(`Aucune bière détectée ! Vérifie le format.\n\nExemple attendu :\n[29/05/2026 22:25:19] ~ Hugo Alves: 171 Davez <pièce jointe...>`);
-    return;
-  }
+  if (!parsed.length) { alert('Aucune bière détectée !'); return; }
 
   buildNameMap();
   $('card-names').style.display = 'block';
@@ -226,83 +288,121 @@ window.parseWA = () => {
 
 function buildNameMap() {
   $('nameMap').innerHTML = waNames.map(name => {
-    const uid = 'nm_' + name.toLowerCase().replace(/[^a-z0-9]/g,'_');
-    const count = parsed.filter(p => p.waName === name).length;
-    // Propose a clean name: remove ~ prefix, keep first name only
-    const cleanName = name.replace(/^~\s*/,'').trim().split(' ')[0];
+    const uid = 'nm_'+name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+    const count = parsed.filter(p=>p.waName===name).length;
+    const clean = name.replace(/^~\s*/,'').trim().split(' ')[0];
     return `<div class="name-row">
       <div class="name-from">${name} <span style="color:var(--gold);font-size:11px;">(${count} 🍺)</span></div>
       <span style="color:var(--gold);">→</span>
-      <input class="map-input" id="${uid}" value="${cleanName}" placeholder="Prénom dans l'app">
+      <input class="mi" id="${uid}" value="${clean}" placeholder="Prénom">
     </div>`;
   }).join('');
 }
 
-// ── PREVIEW ────────────────────────────────────────────────────────────────
+// ── BUILD PREVIEW (after name mapping) ─────────────────────────────────────
 window.buildPreview = () => {
   nameMapping = {};
   waNames.forEach(name => {
-    const uid = 'nm_' + name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+    const uid = 'nm_'+name.toLowerCase().replace(/[^a-z0-9]/g,'_');
     const input = document.getElementById(uid);
-    const displayName = input?.value.trim() || name.replace(/^~\s*/,'').trim();
-    const mappedUid = displayName.toLowerCase().replace(/[^a-z0-9]/g,'_');
-    nameMapping[name] = { uid: mappedUid, displayName };
+    const dn = input?.value.trim() || name.replace(/^~\s*/,'').trim();
+    nameMapping[name] = { uid: dn.toLowerCase().replace(/[^a-z0-9]/g,'_'), displayName: dn };
   });
 
-  toImport = parsed.map(p => ({
-    ...p,
-    uid: nameMapping[p.waName].uid,
-    displayName: nameMapping[p.waName].displayName,
-  }));
+  // Populate datalist for manual entry
+  const names = [...new Set(Object.values(nameMapping).map(m=>m.displayName))];
+  $('namesList').innerHTML = names.map(n=>`<option value="${n}">`).join('');
 
-  // Deduplicate by num (keep first occurrence)
-  const seen = new Set();
-  const deduped = [];
-  const dupes = [];
-  toImport.forEach(e => {
-    if (seen.has(e.num)) { dupes.push(e); }
-    else { seen.add(e.num); deduped.push(e); }
-  });
-  toImport = deduped;
+  $('card-manual').style.display = 'block';
+  $('card-manual').scrollIntoView({ behavior: 'smooth' });
 
-  const byPerson = {};
-  toImport.forEach(e => { byPerson[e.displayName] = (byPerson[e.displayName]||0)+1; });
-  const nums = toImport.map(e=>e.num);
-  const maxNum = Math.max(...nums);
-  const minNum = Math.min(...nums);
+  // Show how many detected
+  const withPhoto = parsed.filter(p=>p.photo).length;
+  alert(`✅ ${parsed.length} bières détectées\n📸 ${withPhoto} avec photo\n\nAjoute maintenant les bières manquantes si besoin, puis clique "Valider".`);
+};
 
-  $('previewStats').innerHTML = `
-    <div class="stat"><div class="stat-val">${toImport.length}</div><div class="stat-lbl">bières à importer</div></div>
-    <div class="stat"><div class="stat-val">${Object.keys(byPerson).length}</div><div class="stat-lbl">personnes</div></div>
-    <div class="stat"><div class="stat-val">#${minNum}</div><div class="stat-lbl">première bière</div></div>
-    <div class="stat"><div class="stat-val">#${maxNum}</div><div class="stat-lbl">dernière bière</div></div>
-    ${dupes.length ? `<div class="stat" style="border-color:rgba(255,150,0,0.4);"><div class="stat-val" style="color:#f0a830;">${dupes.length}</div><div class="stat-lbl">doublons ignorés</div></div>` : ''}
-  `;
+// ── MANUAL ADD ─────────────────────────────────────────────────────────────
+window.addManual = () => {
+  const num = parseInt($('m-num').value);
+  const name = $('m-name').value.trim();
+  const lieu = $('m-lieu').value.trim() || 'Lieu non précisé';
+  const dateVal = $('m-date').value;
 
-  // Show first 100
-  const shown = toImport.slice(0, 100);
-  $('previewList').innerHTML = shown.map(e => {
-    const d = new Date(e.ts);
-    const ds = d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    return `<div class="pi">
-      <div class="num">#${e.num}</div>
-      <div class="info">
-        <div class="name">${e.displayName}</div>
-        <div class="det">📍 ${e.lieu} · 📅 ${ds}</div>
-      </div>
-    </div>`;
-  }).join('') + (toImport.length > 100 ? `<div style="text-align:center;color:rgba(255,255,255,0.3);padding:10px;font-size:12px;">... et ${toImport.length-100} autres</div>` : '');
+  if (!num || !name) { alert('Numéro et prénom obligatoires !'); return; }
 
-  // Ignored
-  if (ignored.length) {
-    $('ignoredBox').style.display = 'block';
-    $('ignoredList').innerHTML = ignored.slice(0,30).map(i =>
-      `<div>👤 <b>${i.name}</b> : "${i.content}"</div>`
-    ).join('') + (ignored.length > 30 ? `<div>... et ${ignored.length-30} autres</div>` : '');
+  // Check if num already exists
+  if (parsed.some(p=>p.num===num) || manualEntries.some(p=>p.num===num)) {
+    if (!confirm(`Le numéro #${num} existe déjà. Ajouter quand même ?`)) return;
   }
 
-  $('card-preview').style.display = 'block';
-  $('card-preview').scrollIntoView({ behavior: 'smooth' });
+  const ts = dateVal ? new Date(dateVal).getTime() : Date.now();
+  manualEntries.push({ num, displayName: name, lieu, ts, photo: null, manual: true });
+  renderManualList();
+
+  $('m-num').value=''; $('m-lieu').value=''; $('m-name').value=''; $('m-date').value='';
+};
+
+function renderManualList() {
+  const list = $('manualList');
+  if (!manualEntries.length) { list.innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px;">Aucune entrée manuelle pour l\'instant.</div>'; return; }
+  list.innerHTML = manualEntries.map((e,i) => {
+    const d = new Date(e.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    return `<div class="manual-item">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--goldf);min-width:38px;">#${e.num}</div>
+      <div style="flex:1;"><div style="font-weight:700;">${e.displayName}</div><div style="color:rgba(255,255,255,0.5);font-size:11px;">📍 ${e.lieu} · 📅 ${d}</div></div>
+      <button class="del-btn" onclick="delManual(${i})">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+window.delManual = i => { manualEntries.splice(i,1); renderManualList(); };
+
+// ── BUILD FINAL ─────────────────────────────────────────────────────────────
+window.buildFinal = () => {
+  // Merge parsed + manual
+  const all = [
+    ...parsed.map(p => ({
+      uid: nameMapping[p.waName]?.uid || p.waName.toLowerCase().replace(/[^a-z0-9]/g,'_'),
+      displayName: nameMapping[p.waName]?.displayName || p.waName,
+      num: p.num, lieu: p.lieu, ts: p.ts, photo: p.photo,
+    })),
+    ...manualEntries.map(e => ({
+      uid: e.displayName.toLowerCase().replace(/[^a-z0-9]/g,'_'),
+      displayName: e.displayName,
+      num: e.num, lieu: e.lieu, ts: e.ts, photo: null,
+    })),
+  ];
+
+  // Sort by num
+  all.sort((a,b) => a.num - b.num);
+
+  // Final dedup
+  const seen = new Set();
+  toImport = all.filter(e => { if(seen.has(e.num)) return false; seen.add(e.num); return true; });
+
+  const withPhoto = toImport.filter(e=>e.photo).length;
+  const byPerson = {};
+  toImport.forEach(e => { byPerson[e.displayName]=(byPerson[e.displayName]||0)+1; });
+
+  $('previewStats').innerHTML = `
+    <div class="stat"><div class="stat-val">${toImport.length}</div><div class="stat-lbl">bières total</div></div>
+    <div class="stat"><div class="stat-val">${withPhoto}</div><div class="stat-lbl">avec photo 📸</div></div>
+    <div class="stat"><div class="stat-val">${toImport.length-withPhoto}</div><div class="stat-lbl">sans photo</div></div>
+    <div class="stat"><div class="stat-val">${Object.keys(byPerson).length}</div><div class="stat-lbl">personnes</div></div>
+  `;
+
+  const shown = toImport.slice(0,80);
+  $('previewList').innerHTML = shown.map(e => {
+    const d = new Date(e.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="pi">
+      ${e.photo ? `<img class="thumb" src="${e.photo}">` : '<div class="no-photo">📷</div>'}
+      <div class="num">#${e.num}</div>
+      <div class="info"><div class="name">${e.displayName}</div><div class="det">📍 ${e.lieu} · 📅 ${d}</div></div>
+    </div>`;
+  }).join('') + (toImport.length>80?`<div style="text-align:center;color:rgba(255,255,255,0.3);padding:10px;font-size:12px;">... et ${toImport.length-80} autres</div>`:'');
+
+  $('card-preview').style.display='block';
+  $('card-preview').scrollIntoView({behavior:'smooth'});
 };
 
 // ── IMPORT ─────────────────────────────────────────────────────────────────
@@ -310,89 +410,75 @@ window.startImport = async () => {
   if (!toImport.length) return;
   if (!confirm(`Importer ${toImport.length} bières dans Firebase ?\n\nCette action ne peut pas être annulée.`)) return;
 
-  $('card-import').style.display = 'block';
-  $('card-import').scrollIntoView({ behavior: 'smooth' });
-  $('btnImport').disabled = true;
+  $('card-import').style.display='block';
+  $('card-import').scrollIntoView({behavior:'smooth'});
+  $('btnImport').disabled=true;
 
-  const logBox = $('logBox');
-  const addLog = (msg, cls='lok') => {
-    const d = document.createElement('div');
-    d.className = cls; d.textContent = msg;
-    logBox.appendChild(d);
-    logBox.scrollTop = logBox.scrollHeight;
-  };
+  const logBox=$('logBox');
+  const log = (msg,cls='lok') => { const d=document.createElement('div');d.className=cls;d.textContent=msg;logBox.appendChild(d);logBox.scrollTop=logBox.scrollHeight; };
 
-  // 1. Create users
-  const userCounts = {};
-  toImport.forEach(e => {
-    if (!userCounts[e.uid]) userCounts[e.uid] = { name: e.displayName, count: 0 };
+  // 1. Users
+  const userCounts={};
+  toImport.forEach(e=>{
+    if(!userCounts[e.uid]) userCounts[e.uid]={name:e.displayName,count:0};
     userCounts[e.uid].count++;
   });
 
-  addLog(`👤 Création de ${Object.keys(userCounts).length} profils...`);
-  for (const [uid, data] of Object.entries(userCounts)) {
-    try {
-      const ref = doc(db,'users',uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        await updateDoc(ref, { count: increment(data.count) });
-      } else {
-        await setDoc(ref, { name: data.name, avatar: null, count: data.count, createdAt: Date.now() });
-      }
-      addLog(`  ✓ ${data.name} → ${data.count} bières`);
-    } catch(e) { addLog(`  ✗ Erreur ${data.name}: ${e.message}`, 'lerr'); }
+  log(`👤 Création de ${Object.keys(userCounts).length} profils...`);
+  for(const [uid,data] of Object.entries(userCounts)){
+    try{
+      const ref=doc(db,'users',uid);
+      const snap=await getDoc(ref);
+      if(snap.exists()){await updateDoc(ref,{count:increment(data.count)});}
+      else{await setDoc(ref,{name:data.name,avatar:null,count:data.count,createdAt:Date.now()});}
+      log(`  ✓ ${data.name} (${data.count} bières)`);
+    }catch(e){log(`  ✗ ${data.name}: ${e.message}`,'lerr');}
   }
 
-  // 2. Import logs by batch of 400
-  const total = toImport.length;
-  let done = 0;
-  const BATCH = 400;
+  // 2. Logs by batch
+  const total=toImport.length;
+  let done=0;
+  const BATCH=300; // smaller batch because photos are big
 
-  for (let i = 0; i < toImport.length; i += BATCH) {
-    const chunk = toImport.slice(i, i + BATCH);
-    try {
-      const batch = writeBatch(db);
-      chunk.forEach(e => {
-        batch.set(doc(collection(db,'logs')), {
-          uid: e.uid,
-          userName: e.displayName,
-          lieu: e.lieu,
-          photo: null,
-          lat: null, lng: null,
-          ts: e.ts,
-          num: e.num,
-          imported: true,
+  for(let i=0;i<toImport.length;i+=BATCH){
+    const chunk=toImport.slice(i,i+BATCH);
+    try{
+      const batch=writeBatch(db);
+      chunk.forEach(e=>{
+        batch.set(doc(collection(db,'logs')),{
+          uid:e.uid, userName:e.displayName,
+          lieu:e.lieu, photo:e.photo||null,
+          lat:null, lng:null,
+          ts:e.ts, num:e.num,
+          imported:true,
         });
       });
       await batch.commit();
-      done += chunk.length;
-      const pct = Math.round((done/total)*100);
-      $('progFill').style.width = pct + '%';
-      $('progTxt').textContent = `${done} / ${total} bières importées (${pct}%)`;
-      addLog(`📦 Batch ${Math.ceil(i/BATCH)+1} : ${done}/${total} OK`);
-    } catch(e) { addLog(`✗ Erreur batch: ${e.message}`, 'lerr'); }
+      done+=chunk.length;
+      const pct=Math.round((done/total)*100);
+      $('progFill').style.width=pct+'%';
+      $('progTxt').textContent=`${done} / ${total} (${pct}%)`;
+      log(`📦 Batch ${Math.ceil(i/BATCH)+1} : ${done}/${total} OK`);
+    }catch(e){log(`✗ Erreur batch: ${e.message}`,'lerr');}
   }
 
-  // 3. Update global counter
-  try {
-    const metaRef = doc(db,'meta','global');
-    const ms = await getDoc(metaRef);
-    if (ms.exists()) {
-      await updateDoc(metaRef, { total: increment(toImport.length) });
-    } else {
-      await setDoc(metaRef, { total: toImport.length });
-    }
-    addLog(`✅ Compteur global mis à jour : ${toImport.length} bières ajoutées`);
-  } catch(e) { addLog(`✗ Erreur compteur: ${e.message}`, 'lerr'); }
+  // 3. Global counter
+  try{
+    const metaRef=doc(db,'meta','global');
+    const ms=await getDoc(metaRef);
+    if(ms.exists()){await updateDoc(metaRef,{total:increment(toImport.length)});}
+    else{await setDoc(metaRef,{total:toImport.length});}
+    log(`✅ Compteur global : +${toImport.length}`);
+  }catch(e){log(`✗ Erreur compteur: ${e.message}`,'lerr');}
 
-  addLog(`🎉 Import terminé !`);
+  log('🎉 Import terminé !');
 
-  $('doneStats').innerHTML = `
+  $('doneStats').innerHTML=`
     <div class="stat"><div class="stat-val">${done}</div><div class="stat-lbl">bières importées</div></div>
-    <div class="stat"><div class="stat-val">${Object.keys(userCounts).length}</div><div class="stat-lbl">profils créés</div></div>
+    <div class="stat"><div class="stat-val">${toImport.filter(e=>e.photo).length}</div><div class="stat-lbl">avec photo 📸</div></div>
   `;
-  $('card-done').style.display = 'block';
-  $('card-done').scrollIntoView({ behavior: 'smooth' });
+  $('card-done').style.display='block';
+  $('card-done').scrollIntoView({behavior:'smooth'});
 };
 </script>
 </body>
